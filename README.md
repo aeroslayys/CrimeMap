@@ -6,7 +6,9 @@
 
 ## Quick start
 
-Requires **Python 3.11+**, **Node.js/npm**, and Fedora/Linux or macOS for the one-command launcher. On a **first install only**:
+Requires **Python 3.11+** and a recent **Node.js LTS with npm**. The one-command launcher now supports **Windows, Linux and macOS**.
+
+### Linux/macOS (first install only)
 
 ```fish
 cd backend
@@ -31,6 +33,32 @@ python3 start.py
 - **Stop:** Ctrl+C (stops backend and frontend together)
 
 After updates that change dependencies, run `cd backend && .venv/bin/python -m pip install -r requirements.txt` in the **existing** virtual environment. Don't delete your SQLite database or rebootstrap accounts when updating.
+
+### Windows (PowerShell, first install only)
+
+Clone your own copy, then run these commands in **PowerShell** from the repository root:
+
+```powershell
+git clone --branch dev/shwetha https://github.com/aeroslayys/CrimeMap.git
+cd CrimeMap
+cd backend
+py -3 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.\.venv\Scripts\python.exe -m app.bootstrap_admin
+.\.venv\Scripts\python.exe -m scripts.seed_demo
+cd ..\frontend
+npm install
+cd ..
+.\start_windows.bat
+```
+
+The first administrator and 100 synthetic seed records are created **only on a brand-new teammate database**; skip bootstrap/seed on existing local installations. Each clone has its **own independent SQLite database**, not your private imported records or accounts.
+
+After first-time setup, **double-click `start_windows.bat`** in File Explorer, or run `.\start_windows.bat` in PowerShell. It starts **both backend and frontend in one terminal**, with shared logs, and Ctrl+C stops them. You can also run `py -3 start.py`. No PowerShell execution-policy changes, Docker, or PostgreSQL are needed.
+
+If updating on Windows, pull the new code, then install updated dependencies inside the existing venv with `cd backend; .\.venv\Scripts\python.exe -m pip install -r requirements.txt`; return to the root and launch again. Do not delete `backend\crimemap.db` or rebootstrap accounts.
+
+
 
 For optional PostgreSQL, security configuration, detailed role permissions, backups and test commands, see [Developer setup](docs/SETUP.md).
 
