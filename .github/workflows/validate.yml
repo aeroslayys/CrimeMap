@@ -96,3 +96,64 @@ jobs:
               assert db.scalar(select(func.count()).select_from(User)) == 1
           print("PostgreSQL seed is idempotent, 100 fixtures; account preserved")
           PY
+
+  windows-launcher:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install backend in Windows virtualenv
+        shell: pwsh
+        run: |
+          python -m venv backend/.venv
+          & "backend/.venv/Scripts/python.exe" -m pip install -r backend/requirements-dev.txt
+      - name: Install frontend for launcher smoke test
+        working-directory: frontend
+        run: npm ci
+      - name: Test Windows launcher logic
+        shell: pwsh
+        run: |
+          & "backend/.venv/Scripts/python.exe" -m pytest -q backend/tests/test_launcher.py
+      - name: Smoke test one-terminal Windows startup
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $root = (Get-Location).Path
+          $python = Join-Path $root 'backend/.venv/Scripts/python.exe'
+          $stdout = Join-Path $root 'launcher-stdout.log'
+          $stderr = Join-Path $root 'launcher-stderr.log'
+          $launcher = Start-Process -FilePath $python -ArgumentList 'start.py' -WorkingDirectory $root -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+          try {
+            $ready = $false
+            for ($attempt = 0; $attempt -lt 45; $attempt++) {
+              if ($launcher.HasExited) { break }
+              try {
+                $health = Invoke-RestMethod -Uri 'http://127.0.0.1:8000/health' -TimeoutSec 2
+                $frontend = Invoke-WebRequest -Uri 'http://127.0.0.1:5173' -TimeoutSec 2 -UseBasicParsing
+                if ($health.status -eq 'ok' -and $frontend.StatusCode -eq 200) {
+                  $ready = $true
+                  break
+                }
+              } catch { }
+              Start-Sleep -Milliseconds 1000
+            }
+            if (-not $ready) {
+              throw 'Windows launcher did not start both FastAPI and Vite.'
+            }
+            Write-Host 'Windows launcher served FastAPI health and Vite successfully.'
+          } finally {
+            if (-not $launcher.HasExited) {
+              & taskkill.exe /PID $launcher.Id /T /F | Out-Null
+            }
+            Write-Host 'Launcher stdout:'
+            if (Test-Path $stdout) { Get-Content $stdout }
+            Write-Host 'Launcher stderr:'
+            if (Test-Path $stderr) { Get-Content $stderr }
+          }
