@@ -119,8 +119,9 @@ jobs:
         run: npm ci
       - name: Test Windows launcher logic
         shell: pwsh
+        working-directory: backend
         run: |
-          & "backend/.venv/Scripts/python.exe" -m pytest -q backend/tests/test_launcher.py
+          & ".venv/Scripts/python.exe" -m pytest -q tests/test_launcher.py
       - name: Smoke test one-terminal Windows startup
         shell: pwsh
         run: |
