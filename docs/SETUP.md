@@ -30,6 +30,28 @@ python3 start.py
 
 The launcher does not install dependencies, create accounts, seed incidents or erase existing data.
 
+## Windows teammates (PowerShell)
+
+Clone the default development branch with `git clone --branch dev/shwetha https://github.com/aeroslayys/CrimeMap.git`. Install Python 3.11+ and current Node.js LTS, then open **PowerShell** in the cloned repository:
+
+```powershell
+cd backend
+py -3 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.\.venv\Scripts\python.exe -m app.bootstrap_admin
+.\.venv\Scripts\python.exe -m scripts.seed_demo
+cd ..\frontend
+npm install
+cd ..
+.\start_windows.bat
+```
+
+**Bootstrap and seed are first-time steps for a brand-new teammate database only.** The seeded incidents are fictional; existing users and records must not be overwritten or recreated. Each teammate has an independent SQLite database in their own `backend\crimemap.db`. Source cloning never copies another developer's private database or accounts.
+
+After setup, double-click `start_windows.bat` from Explorer, or run it from PowerShell. One terminal runs both FastAPI on port 8000 and Vite on port 5173. Ctrl+C stops them. The batch file checks for an installed venv and invokes the shared cross-platform `start.py`; it **does not seed, install, bootstrap, reset or delete anything**. Python virtualenvs must be created separately on each operating system.
+
+Do **not** set PowerShell's execution policy to unrestricted: the provided launcher is a regular `.bat` file and does not need `.ps1` permission changes. If `py` is not installed but `python` is available, use `python -m venv .venv` instead. If `npm` is not recognized, reopen PowerShell after installing Node.js.
+
 ## Permissions and account security
 
 | Permission | Viewer | Analyst | Officer | Admin |
