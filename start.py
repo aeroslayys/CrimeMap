@@ -1,9 +1,9 @@
-"""Start CrimeMap's FastAPI backend and Vite frontend together on Fedora/Linux.
+"""Start CrimeMap FastAPI and Vite together on Windows, Linux or macOS.
 
-Run from anywhere with: python3 /path/to/CrimeMap/start.py
-
-Uses backend/.venv and frontend/node_modules, without activating a shell.
-Ctrl+C stops both process groups, including Vite and Uvicorn reload children.
+Run from any directory: python start.py
+Windows: double-click start_windows.bat after first-time setup.
+Uses the existing backend/.venv and frontend/node_modules. Never seeds,
+bootstraps, recreates accounts, or changes the configured database.
 """
 import os
 import shutil
@@ -17,7 +17,27 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 BACKEND = ROOT / "backend"
 FRONTEND = ROOT / "frontend"
-PYTHON = BACKEND / ".venv" / "bin" / "python"
+IS_WINDOWS = os.name == "nt"
+PYTHON = BACKEND / ".venv" / ("Scripts/python.exe" if IS_WINDOWS else "bin/python")
+VITE_SCRIPT = FRONTEND / "node_modules" / "vite" / "bin" / "vite.js"
+
+
+def setup_commands() -> str:
+    if IS_WINDOWS:
+        return (
+            "  cd backend\n"
+            "  py -3 -m venv .venv\n"
+            "  .\\.venv\\Scripts\\python.exe -m pip install -r requirements-dev.txt\n"
+            "  cd ..\\frontend\n"
+            "  npm install"
+        )
+    return (
+        "  cd backend\n"
+        "  python3 -m venv .venv\n"
+        "  .venv/bin/python -m pip install -r requirements-dev.txt\n"
+        "  cd ../frontend\n"
+        "  npm install"
+    )
 
 
 def prerequisites() -> bool:
@@ -25,39 +45,71 @@ def prerequisites() -> bool:
         print("Error: start.py must live in the CrimeMap repository root.", file=sys.stderr)
         return False
     if not PYTHON.is_file():
-        print(
-            "Backend Python environment missing. Run:\n"
-            "  cd backend\n"
-            "  python3 -m venv .venv\n"
-            "  .venv/bin/python -m pip install -r requirements-dev.txt",
-            file=sys.stderr,
-        )
+        print("Backend Python environment missing. First-time setup:\n"
+              + setup_commands(), file=sys.stderr)
         return False
-    if shutil.which("npm") is None:
-        print("Error: Node.js/npm is not installed or is not on PATH.", file=sys.stderr)
+    if not shutil.which("node"):
+        print("Error: Node.js was not found. Install a supported Node.js LTS "
+              "release and reopen the terminal.", file=sys.stderr)
         return False
-    if not (FRONTEND / "node_modules" / ".bin" / "vite").exists():
-        print("Frontend dependencies missing. Run: cd frontend && npm install", file=sys.stderr)
+    if not VITE_SCRIPT.is_file():
+        print("Frontend dependencies missing. Run: cd frontend && npm install",
+              file=sys.stderr)
         return False
     result = subprocess.run(
-        [str(PYTHON), "-c", "import uvicorn; import sqlalchemy"],
+        [str(PYTHON), "-c", "import app.main; import uvicorn"],
         cwd=BACKEND,
         capture_output=True,
         text=True,
         check=False,
     )
     if result.returncode:
+        command = (".\\.venv\\Scripts\\python.exe" if IS_WINDOWS else ".venv/bin/python")
         print(
-            "Backend dependencies missing. Run: cd backend && "
-            ".venv/bin/python -m pip install -r requirements-dev.txt",
+            "Backend dependencies missing or invalid. From backend/ run:\n"
+            f"  {command} -m pip install -r requirements.txt\n"
+            "Details: " + (result.stderr.strip() or result.stdout.strip())[-1000:],
             file=sys.stderr,
         )
         return False
     return True
 
 
+def process_options() -> dict:
+    """Start separate child groups, so stopping the launcher also stops reloaders."""
+    if IS_WINDOWS:
+        return {"creationflags": getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0x200)}
+    return {"start_new_session": True}
+
+
 def terminate(processes: list[subprocess.Popen]) -> None:
-    """Stop both *groups* so Vite/Uvicorn child processes don't stay running."""
+    """Stop both servers *including* Uvicorn/Vite child processes."""
+    if IS_WINDOWS:
+        for process in processes:
+            if process.poll() is None:
+                try:
+                    process.send_signal(getattr(signal, "CTRL_BREAK_EVENT", 1))
+                except (AttributeError, OSError, ValueError):
+                    pass
+        for process in processes:
+            if process.poll() is not None:
+                continue
+            try:
+                process.wait(timeout=3)
+            except subprocess.TimeoutExpired:
+                # taskkill /T targets the process tree (Uvicorn reload child too).
+                subprocess.run(
+                    ["taskkill", "/PID", str(process.pid), "/T", "/F"],
+                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                    check=False,
+                )
+                try:
+                    process.wait(timeout=2)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait()
+        return
+
     for process in processes:
         if process.poll() is None:
             try:
@@ -76,9 +128,6 @@ def terminate(processes: list[subprocess.Popen]) -> None:
 
 
 def main() -> int:
-    if os.name != "posix":
-        print("This starter currently supports Fedora/Linux and macOS.", file=sys.stderr)
-        return 1
     if not prerequisites():
         return 1
 
@@ -91,15 +140,19 @@ def main() -> int:
     signal.signal(signal.SIGTERM, handle_term)
     try:
         print("Starting CrimeMap (press Ctrl+C to stop both servers)...", flush=True)
+        options = process_options()
         processes.append(subprocess.Popen(
             [str(PYTHON), "-m", "uvicorn", "app.main:app",
              "--reload", "--host", "127.0.0.1", "--port", "8000"],
-            cwd=BACKEND, start_new_session=True,
+            cwd=BACKEND, **options,
         ))
+        # Calling Vite's Node entrypoint avoids Windows npm.cmd shell quirks,
+        # while retaining the same Vite development server configuration.
+        node = shutil.which("node")
         processes.append(subprocess.Popen(
-            ["npm", "run", "dev", "--", "--host", "127.0.0.1",
+            [node, str(VITE_SCRIPT), "--host", "127.0.0.1",
              "--port", "5173", "--strictPort"],
-            cwd=FRONTEND, start_new_session=True,
+            cwd=FRONTEND, **options,
         ))
         print(
             "\n  Frontend: http://127.0.0.1:5173\n"
