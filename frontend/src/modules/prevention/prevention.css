@@ -33,9 +33,22 @@
 .prevention-action p{color:#c2d3e7;font-size:14px;line-height:1.6}
 .prevention-action small{color:#abc7e1;line-height:1.5;font-size:12px}
 .prevention-action .button{margin-top:4px;justify-self:start;font-size:13px}
-.prevention-method{padding:17px 20px;margin-top:17px}
-.prevention-method summary{font-size:15px;color:#e1ecfa;cursor:pointer;font-weight:700}
-.prevention-method p{font-size:14px;line-height:1.7;color:#b8cfe6;margin-top:12px}
+/* Visible methodology card: intentionally not collapsed on a projector. */
+.prevention-method{margin-top:22px;overflow:hidden;border-radius:13px}
+.prevention-method-heading{display:flex;align-items:center;gap:13px;padding:20px 23px;
+  background:linear-gradient(115deg,#18314d,#11243b);border-bottom:1px solid #304860}
+.prevention-method-icon{flex:none;display:grid;place-items:center;width:43px;height:43px;
+  background:#244665;border:1px solid #3b658d;border-radius:11px;color:#b5d9ff}
+.prevention-method-eyebrow{font-size:11px;font-weight:800;letter-spacing:1.2px;color:#99bfe7;margin-bottom:5px}
+.prevention-method-heading h3{font-size:18px;font-weight:800;line-height:1.4;color:#edf5ff}
+.prevention-method-content{display:grid;gap:11px;padding:20px 24px 23px}
+.prevention-method-content p{font-size:15px;font-weight:500;line-height:1.75;color:#c4d6ea;margin:0}
+@media(max-width:520px){
+  .prevention-method-heading{padding:16px;gap:10px}
+  .prevention-method-content{padding:16px}
+  .prevention-method-icon{width:37px;height:37px}
+  .prevention-method-heading h3{font-size:16px}
+}
 .prevention-board{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
 .prevention-plan{display:flex;flex-direction:column;gap:13px;padding:20px;background:#142337;border:1px solid #354b66;border-radius:11px;min-width:0}
 .prevent-plan-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
