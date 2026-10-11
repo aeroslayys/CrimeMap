@@ -34,7 +34,14 @@
 :root[data-theme="light"] h2,
 :root[data-theme="light"] h3,
 :root[data-theme="light"] h4 { color: #10203a; }
-:root[data-theme="light"] .main-area { background: linear-gradient(145deg,#edf4ff 0%,#f6f9fd 42%,#eaf0f9 100%); }
+/* Layered blue highlights keep the spacious light surface as dimensional as dark mode. */
+:root[data-theme="light"] .main-area {
+  background-color:#eef5ff;
+  background-image:
+    radial-gradient(ellipse 850px 500px at 78% -60px,rgba(154,197,250,.58) 0%,transparent 74%),
+    radial-gradient(ellipse 710px 650px at 5% 70%,rgba(194,216,250,.62) 0%,transparent 76%),
+    linear-gradient(145deg,#e8f2ff 0%,#f8fbff 55%,#e7f0fc 100%);
+}
 :root[data-theme="light"] .sidebar { background: #fff; border-right-color: #cbd6e5; box-shadow: 2px 0 18px #203f6310; }
 :root[data-theme="light"] .logo { color: #122442; }
 :root[data-theme="light"] .logo-symbol { background:#dbeafe; border-color:#8bb6f0; color:#1455b8; }
@@ -323,4 +330,141 @@
 @media (max-width: 520px) {
   .auth-theme-switch .theme-toggle { padding:8px 10px; font-size:12px; }
   .auth-card { margin-top:46px; }
+}
+
+/* Projector presentation pass: give cards separation from the light canvas. */
+:root[data-theme="light"] .panel,
+:root[data-theme="light"] .stat {
+  background:rgba(255,255,255,.97);
+  border-color:#bfd1e5;
+  box-shadow:0 9px 25px rgba(28,60,99,.085),0 2px 5px rgba(34,67,105,.035);
+}
+:root[data-theme="light"] .prevention-observation,
+:root[data-theme="light"] .prevention-action,
+:root[data-theme="light"] .prevention-plan {
+  box-shadow:0 6px 17px rgba(27,64,111,.065);
+}
+:root[data-theme="light"] .prevention-method {
+  background:#ffffff;
+  border:1px solid #b5cbe4;
+  box-shadow:0 10px 28px rgba(29,70,118,.10);
+}
+:root[data-theme="light"] .prevention-method-heading {
+  background:linear-gradient(115deg,#dfeeff 0%,#f3f8ff 73%,#e9f2ff 100%);
+  border-bottom:1px solid #bfcee2;
+}
+:root[data-theme="light"] .prevention-method-icon {
+  background:#d0e4ff;
+  border-color:#a2c5f2;
+  color:#1557af;
+}
+:root[data-theme="light"] .prevention-method-eyebrow {
+  color:#285a92;
+  font-size:12px;
+}
+:root[data-theme="light"] .prevention-method-heading h3 {
+  color:#172e4a;
+  font-size:19px;
+  font-weight:800;
+}
+:root[data-theme="light"] .prevention-method-content p {
+  color:#304a67;
+  font-weight:500;
+  font-size:15px;
+  line-height:1.75;
+}
+:root[data-theme="light"] .prevention-placeholder {
+  background:rgba(255,255,255,.97);
+  color:#3e5876;
+  border-color:#c4d6e9;
+  font-size:15px;
+  font-weight:500;
+}
+:root[data-theme="light"] .prevention-method-content {
+  background:linear-gradient(180deg,#fff 0%,#f9fbff 100%);
+}
+
+/* Heavier and larger secondary content stays legible under projector washout.
+   Keep widths and control layouts unchanged on phone and laptop. */
+:root[data-theme="light"] .intro,
+:root[data-theme="light"] .panel-heading p,
+:root[data-theme="light"] .prevention-section-heading p,
+:root[data-theme="light"] .prevention-card-explain,
+:root[data-theme="light"] .prevention-action p,
+:root[data-theme="light"] .analytics-filter-note,
+:root[data-theme="light"] .analytics-footnote,
+:root[data-theme="light"] .map-results>p,
+:root[data-theme="light"] .map-record-details {
+  font-size:15px;
+  line-height:1.7;
+  font-weight:500;
+  color:#334c69;
+}
+:root[data-theme="light"] .prevention-section-heading h2 {
+  font-size:23px;
+  font-weight:800;
+}
+:root[data-theme="light"] .prevention-observation h3 {
+  font-size:20px;
+  font-weight:800;
+}
+:root[data-theme="light"] .prevention-action strong {
+  font-size:16px;
+  font-weight:800;
+}
+:root[data-theme="light"] .prevention-action small,
+:root[data-theme="light"] .prevention-small,
+:root[data-theme="light"] .prevention-footnote,
+:root[data-theme="light"] .prevention-details dt {
+  font-size:14px;
+  line-height:1.6;
+  color:#4a617e;
+  font-weight:500;
+}
+:root[data-theme="light"] .prevention-section-heading>span {
+  color:#174d91;
+  font-weight:800;
+  border:1px solid #c8daf0;
+}
+:root[data-theme="light"] .prevention-category,
+:root[data-theme="light"] .prevention-card-measures h4,
+:root[data-theme="light"] .prevention-field label {
+  font-size:15px;
+  font-weight:700;
+}
+:root[data-theme="light"] .prevention-action .button {
+  font-size:14px;
+  font-weight:700;
+}
+:root[data-theme="light"] .map-footnote,
+:root[data-theme="light"] .table-footer,
+:root[data-theme="light"] .footer,
+:root[data-theme="light"] .subcell {
+  color:#445e7b;
+  font-weight:500;
+}
+:root[data-theme="light"] .stat-top,
+:root[data-theme="light"] .stat small {
+  font-weight:600;
+  color:#405a77;
+}
+:root[data-theme="light"] .analytics-values th,
+:root[data-theme="light"] .analytics-values td { color:#2c4968; }
+:root[data-theme="light"] .grid-help,
+:root[data-theme="light"] .map-footnote { font-size:14px; }
+
+/* Light-mode form labels require emphasis but not a heavier layout. */
+:root[data-theme="light"] .modal-fields label,
+:root[data-theme="light"] .auth-fields label,
+:root[data-theme="light"] .prevention-modal-form label,
+:root[data-theme="light"] .analytics-filters label {
+  font-weight:700;
+}
+@media(max-width:520px) {
+  :root[data-theme="light"] .prevention-method-heading h3 { font-size:17px; }
+}
+@media print {
+  :root[data-theme="light"] .main-area { background:#fff!important; }
+  :root[data-theme="light"] .prevention-method-heading,
+  :root[data-theme="light"] .prevention-method-content { background:#fff!important; }
 }
