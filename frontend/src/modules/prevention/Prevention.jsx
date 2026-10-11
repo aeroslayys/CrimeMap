@@ -296,11 +296,19 @@ export default function Prevention({ canWrite = false, refresh = 0 }) {
           </div>
         </article>)}
       </div>}
-      {insights && <details className="panel prevention-method">
-        <summary>How these suggestions are generated</summary>
-        <p>{insights.methodology}</p>
-        <p>Counts may vary when you filter or edit records. Suggested actions come from a fixed, category-specific safeguarding library. Creating a plan captures the supporting count at that moment for transparency. No automated predictions, deployment routes or proof of effectiveness are produced.</p>
-      </details>}
+      {insights && <section className="panel prevention-method" aria-labelledby="prevention-method-heading">
+        <div className="prevention-method-heading">
+          <span className="prevention-method-icon" aria-hidden="true"><BookOpen size={20} /></span>
+          <div>
+            <div className="prevention-method-eyebrow">METHODOLOGY · SYNTHETIC DATA</div>
+            <h3 id="prevention-method-heading">How these suggestions are generated</h3>
+          </div>
+        </div>
+        <div className="prevention-method-content">
+          <p>{insights.methodology}</p>
+          <p>Counts may vary when you filter or edit records. Suggested actions come from a fixed, category-specific safeguarding library. Creating a plan captures the supporting count at that moment for transparency. No automated predictions, deployment routes or proof of effectiveness are produced.</p>
+        </div>
+      </section>}
     </section>
 
     <section className="prevention-section prevention-plans-section" aria-labelledby="plan-heading">
