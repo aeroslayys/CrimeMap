@@ -252,6 +252,25 @@ SELECT COUNT(*) AS synthetic_incident_count FROM incidents;
 
 This does not expose password hashes or personal credentials. The app remains a **synthetic-only demo**.
 
+### Correct older fictional offshore pins safely (optional, manual)
+
+The bundled `data/synthetic_incidents.csv` and downloadable sample CSV now use **tighter, intentionally inland fictional locations** for the 100 canonical `DEMO-0001`…`DEMO-0100` incidents. They cluster around inland portions of the city and are not claims about actual crime or verified police jurisdictions. Coordinate envelopes are conservative **approximations**, not an authoritative coastline/land-cover polygon: visually validate the map before presenting.
+
+**Important:** changing the CSV or deploying a new container **does not move records already stored** in Cloud SQL or a developer's local SQLite database. Re-running `scripts.seed_demo` also does not move existing IDs (by design). Do not delete/recreate tables to fix a display issue.
+
+A narrowly scoped coordinate-correction utility is provided: `backend/scripts/reposition_demo.py`. It targets only the canonical 100 `DEMO-` IDs, only where `source_type` is `synthetic`, and only if the existing coordinates match the exact original fixture snapshot. Previously moved records, user-created/imported incidents, accounts, plan statuses, notes and other fields are never overwritten by this command. **It is preview-only unless you explicitly pass `--apply`.**
+
+For a local development database, from the existing repo checkout (no resets/rebootstrap):
+
+```bash
+cd backend
+.venv/bin/python -m scripts.reposition_demo
+# Review the preview; only if appropriate:
+.venv/bin/python -m scripts.reposition_demo --apply
+```
+
+For **Cloud SQL**, review a preview from a separate, temporary Cloud Run Job using a **fresh image containing this script**. Configure it with the same Cloud SQL attachment, runtime service account and database password secret as the existing app, but with `--command=python --args=-m,scripts.reposition_demo`. Only after reviewing logs and taking an appropriate backup (if supported by the trial instance), explicitly update that dedicated job's arguments to include `--apply` and run it **once**. Do **not** modify or rerun `crimemap-init`. This is an administrator-controlled data correction, not an automatic part of deployments or CI.
+
 ### Update the deployed code without touching data
 
 **Do not rerun the initializer to publish code changes.** In Cloud Shell, update the checkout (only if your working tree is clean), build a **new version-tagged image**, and deploy it as a new Cloud Run revision:
