@@ -25,7 +25,7 @@ export default function Welcome({ onSignIn, onOpenWorkspace, embedded = false })
           <button type="button" className="welcome-signin" onClick={enter}><LockKeyhole size={16}/> Sign in</button>
         </nav>
       </header>}
-      <div id="welcome-top" className="welcome-body">
+      <div id="welcome-top" className="welcome-body" role={embedded ? undefined : "main"}>
         <section className="welcome-hero" aria-labelledby="welcome-title">
           <div className="welcome-hero-copy">
             <div className="welcome-eyebrow"><span className="welcome-live-dot" /> PUDUCHERRY · GEOSPATIAL DECISION-SUPPORT DEMO</div>
