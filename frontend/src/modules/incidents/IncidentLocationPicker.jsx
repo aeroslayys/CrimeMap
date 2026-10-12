@@ -8,7 +8,7 @@ import './incident-location.css';
 
 // The same Leaflet/OpenStreetMap stack used by Geospatial Intelligence.
 // Nothing is saved or geocoded until the parent form is explicitly submitted.
-const CENTER = [11.94, 79.81];
+const CENTER = [11.937, 79.820];
 const PIN_ICON = L.divIcon({
   className: 'incident-picker-pin-icon',
   html: '<span class="incident-picker-pin-dot" aria-hidden="true"></span>',
@@ -35,7 +35,7 @@ export default function IncidentLocationPicker({ latitude, longitude, zone = '',
     if (!container) return;
 
     const map = L.map(container, {
-      center: CENTER, zoom: 11, keyboard: true, scrollWheelZoom: false,
+      center: CENTER, zoom: 13, keyboard: true, scrollWheelZoom: false,
       zoomControl: true,
     });
     mapRef.current = map;
@@ -116,7 +116,7 @@ export default function IncidentLocationPicker({ latitude, longitude, zone = '',
 
   function resetMap() {
     if (disabled || !mapRef.current) return;
-    mapRef.current.setView(CENTER, 11);
+    mapRef.current.setView(CENTER, 13);
   }
 
   return <div className="incident-picker" aria-label="Choose incident location">
