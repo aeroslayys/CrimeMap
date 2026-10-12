@@ -330,7 +330,7 @@ function App() {
             setFormError('');
           }}
         />
-        <label>Demonstration zone (auto-suggested, editable)<input type="text" maxLength={120} placeholder="Choose a map location to suggest a demo zone" value={form.police_station} onChange={(e) => setForm({ ...form, police_station: e.target.value })} /><span className="incident-zone-disclaimer">The nearest fictional zone reference is suggested when you place or drag the pin. This is not a verified police jurisdiction. You may correct the zone manually.</span></label>
+        <label>Demonstration zone (auto-suggested, editable)<input type="text" maxLength={120} placeholder="Choose a map location to suggest a demo zone" value={form.police_station} onChange={(e) => setForm({ ...form, police_station: e.target.value })} /><span className="incident-zone-disclaimer">The containing illustrative map zone is suggested when you place or drag the pin. These are not official police jurisdictions. Manual labels do not change geographic zone boundaries.</span></label>
         <label>Notes (optional)<textarea rows={3} maxLength={2000} placeholder="Synthetic test description…" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></label>
         <label>Status<select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>{STATUSES.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
         </div>
