@@ -38,6 +38,41 @@ New incident pins suggest a zone using the same geometry. Editable
 Existing analytics and Grid Analysis `zone` filters still use the stored
 label and are separate from the boundary selection.
 
+## Map zoom and where the demo records appear
+
+**Geospatial Intelligence → Markers** starts at zoom 13, centered on the
+Puducherry urban core. At this zoom individual incident pins are shown
+without the earlier four oversized marker clusters. Use **Pondy city** to
+return to the close urban view at any time; **All demo areas** fits the
+entire A–D study area, including outer neighborhoods to the north, south,
+and west. The map requests incidents in the visible viewport, so the count
+in view is *not* necessarily the full database total.
+
+## Existing Cloud SQL records: easiest admin workflow
+
+Once the **updated GitHub branch has been built and deployed** (CI passing
+alone does not deploy it), sign in as an **administrator**:
+
+1. Open **Geospatial Intelligence**.
+2. Expand **Administrator · Spread existing demo incidents**.
+3. Choose **Preview database changes**. The read-only preview counts
+   unchanged canonical seed locations, already-updated rows, and rows
+   skipped for safety.
+4. Review the result and **back up the database first**. Check the explicit
+   confirmation and select **Spread N demo incidents**.
+5. The app reloads the map data. Select **Pondy city** for city-scale
+   individual markers or **All demo areas** for the full geographic spread.
+
+The update is intentionally **not run automatically on page load,
+app startup, CI, or deployment**. Only an authenticated administrator
+can invoke the confirmed action, and it records an audit event.
+It recognizes only untouched original and previous four-block positions of
+canonical IDs `DEMO-0001` through `DEMO-0100`; manually moved records,
+imported UUIDs, and unrelated database records are left unchanged.
+A second application finds zero remaining eligible positions. You can still
+use the CLI/Cloud Run Job approach below if you prefer controlled
+operator-level migrations.
+
 ## Database safety: existing installs must opt in
 
 Updating the CSV and code **does not move previously seeded database rows**.
