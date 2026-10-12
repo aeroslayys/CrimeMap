@@ -191,3 +191,24 @@
 .map-focus-banner .button{color:#ffedc2;background:#3e3b2c;border:1px solid #78693e}
 .map-focus-banner .button:focus-visible{outline:2px solid #f5d67d;outline-offset:3px}
 @media(max-width:520px){.map-focus-banner .button{flex:1 1 100%}}
+
+
+/* Clickable demo geographic zones: distinct from the fixed-grid analysis. */
+.zone-legend{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
+.zone-legend span{display:inline-flex;align-items:center;gap:7px}
+.zone-legend i,.zone-item-title i{width:12px;height:12px;display:inline-block;flex-shrink:0;border-radius:3px}
+.zone-legend small{width:100%;font-size:12px;line-height:1.5}
+.demo-zone-map-label{background:#102035e8;border:1px solid #d2e5ff80;border-radius:6px;color:#fff;font-size:13px;font-weight:800;padding:3px 7px;box-shadow:0 2px 8px #0008}
+.demo-zone-map-label::before{display:none}
+.zone-list{padding:0 9px 12px}
+.demo-zone-item{width:100%;display:grid;gap:8px;text-align:left;border:1px solid #2d4560;
+  border-radius:9px;margin-top:9px;padding:14px 13px;background:#15283e;color:#c1d6eb;
+  font-size:12px;line-height:1.5;cursor:pointer}
+.demo-zone-item:hover,.demo-zone-item:focus-visible{border-color:#82b9ee;background:#1b3857}
+.demo-zone-item.selected{border:2px solid #a1ceff;background:#244666;padding:13px 12px}
+.zone-item-title{display:flex;align-items:center;gap:9px;color:#eff6ff;font-size:14px}
+.demo-zone-item small{color:#9fbad8;font-size:12px}
+.zone-zoom-link{color:#aad5ff;font-weight:700;justify-self:start}
+@media(max-width:950px) and (min-width:551px){
+  .map-layer-switch{grid-template-columns:repeat(5,minmax(0,1fr))}
+}
