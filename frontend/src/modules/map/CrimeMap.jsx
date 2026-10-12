@@ -745,7 +745,13 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, canManage = 
               <span><i style={{ background: '#70b8ff' }} /> Demo patrols</span>
               <small>Illustrative locations only. Not a live monitoring map.</small>
             </div> : layer === 'grid' && gridView === 'compare' ? <ComparisonLegend /> : layer === 'grid' ? <div className="grid-legend"><span><i style={{ background: colorForCount(1) }} /> 1–4</span><span><i style={{ background: colorForCount(5) }} /> 5–9</span><span><i style={{ background: colorForCount(10) }} /> 10+</span><small>Only cells meeting the count threshold are displayed. No risk estimate.</small></div> : layer === 'heatmap' ? <span>Brighter areas contain more demonstration points. No risk estimate.</span> :
-              <div className="legend-grid">{CATEGORIES.map(value => <span key={value}><i className={`legend-dot cat-${CATEGORY_KEYS[value]}`} />{value}</span>)}</div>}
+              <div>
+                <div className="legend-grid">{CATEGORIES.map(value => <span key={value}><i className={`legend-dot cat-${CATEGORY_KEYS[value]}`} />{value}</span>)}</div>
+                {layer === 'markers' && showMarkerZones && <div className="zone-marker-key">
+                  <small>Illustrative zone outlines · Open Zones to inspect full boundaries</small>
+                  {DEMO_ZONES.map(zone => <span key={zone.id}><i style={{ borderColor: zone.color, backgroundColor: zone.color + '33' }} /> {zone.short}</span>)}
+                </div>}
+              </div>}
           </div>
         </div>
         <aside className="map-results" aria-label={layer === 'grid' ? 'Ranked grid cells' : layer === 'operations' ? 'Simulated operational assets' : 'Incidents in current map view'}>
