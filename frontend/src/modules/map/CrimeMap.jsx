@@ -432,7 +432,7 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, focusInciden
       notice.textContent = 'Illustrative boundary · Not a police jurisdiction';
       popup.append(heading, fromTo, notice);
       polygon.bindPopup(popup);
-      polygon.on('click', () => setActiveZone(zone.id));
+      polygon.on('click', () => selectDemoZone(zone));
       polygon.addTo(group);
     }
     group.addTo(map);
