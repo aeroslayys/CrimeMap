@@ -237,7 +237,7 @@ function App() {
   if (authLoading) return <div className="auth-loading" role="status">Checking CrimeMap session…</div>;
   if (!user) return showSignIn
     ? <Login theme={theme} onToggleTheme={toggleTheme} onBack={() => setShowSignIn(false)} onLogin={profile => { setUser(profile); setMapFocus(null); setView('incidents'); setRefresh(n => n + 1); }} />
-    : <Welcome onSignIn={() => setShowSignIn(true)} />;
+    : <Welcome theme={theme} onToggleTheme={toggleTheme} onSignIn={() => setShowSignIn(true)} />;
 
   return (
     <div className="app-shell">
