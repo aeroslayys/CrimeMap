@@ -6,12 +6,12 @@ import os
 import uuid
 from pathlib import Path
 from contextlib import asynccontextmanager
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastapi import Depends, FastAPI, File, HTTPException, Query, UploadFile, Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import ValidationError
+from pydantic import BaseModel, ValidationError
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
@@ -19,6 +19,7 @@ from .db import Base, engine, get_db
 from .models import Incident
 from .import_review import parse_rows, review_rows
 from .audit import router as audit_router, record_event
+from scripts.reposition_demo import redistribution_plan
 from .auth_models import User
 from .analytics import router as analytics_router
 from .hotspots import router as hotspots_router
@@ -124,6 +125,36 @@ def list_incidents(
     total = db.scalar(select(func.count()).select_from(query.subquery())) or 0
     records = db.scalars(query.order_by(Incident.occurred_at.desc(), Incident.id).offset(offset).limit(limit)).all()
     return IncidentPage(items=[to_read(rec) for rec in records], total=total, limit=limit, offset=offset)
+
+
+class DemoRedistributionConfirmation(BaseModel):
+    # A specific confirmation token prevents an accidental empty POST from
+    # altering previously seeded Cloud SQL or local SQLite incidents.
+    confirmation: Literal["REDISTRIBUTE_CANONICAL_DEMOS"]
+
+
+@app.get("/api/admin/demo-redistribution", dependencies=[Depends(require_permission("manage"))])
+def preview_demo_redistribution(db: Annotated[Session, Depends(get_db)]):
+    """Read-only dry run over original DEMO IDs, never imported/user-created rows."""
+    return redistribution_plan(db)
+
+
+@app.post("/api/admin/demo-redistribution", dependencies=[Depends(require_permission("manage"))])
+def apply_demo_redistribution(
+    request: DemoRedistributionConfirmation,
+    db: Annotated[Session, Depends(get_db)],
+    actor: Annotated[User, Depends(require_permission("manage"))],
+):
+    """Move untouched canonical synthetic seed pins, preserving all other data."""
+    _ = request.confirmation
+    summary = redistribution_plan(db, apply=True)
+    if summary["updated"]:
+        record_event(db, actor, "incident.demo_redistributed", "incident_import", details={
+            "updated": summary["updated"], "skipped_custom": summary["skipped_custom"],
+            "already_current": summary["already_current"],
+        })
+    db.commit()
+    return summary
 
 
 @app.get("/api/map/incidents", dependencies=[Depends(require_permission("read"))])
