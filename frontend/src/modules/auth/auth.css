@@ -70,3 +70,10 @@
 .audit-footer button{font-size:13px}
 .audit-disclaimer{padding:0 20px 18px;color:#b1c4dc;font-size:12px;line-height:1.65}
 @media(max-width:540px){.audit-toolbar>span{margin-left:0;width:100%}.audit-entry{padding:14px}.audit-footer{padding:14px}.audit-footer>div{width:100%}.audit-footer button{flex:1}}
+
+/* Public landing -> sign in -> back: keep login navigation usable in both themes. */
+.auth-return-overview{display:inline-flex;align-items:center;gap:7px;background:transparent;
+  color:#9fd1ff;border:0;font:700 13px 'DM Sans',sans-serif;cursor:pointer;padding:0 0 16px}
+.auth-return-overview:hover{text-decoration:underline;color:#e1f3ff}
+:root[data-theme="light"] .auth-return-overview{color:#1759ad}
+:root[data-theme="light"] .auth-return-overview:hover{color:#0a3878}
