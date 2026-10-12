@@ -1,4 +1,6 @@
 """Correction must never overwrite user-edited coordinates or modify DB by default."""
+import csv
+
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session, sessionmaker
 
@@ -12,6 +14,9 @@ def test_reposition_dry_run_and_safe_apply(tmp_path, monkeypatch, capsys):
     Base.metadata.create_all(engine)
     old_a = reposition_demo.LEGACY_COORDINATES["DEMO-0001"]
     old_b = reposition_demo.LEGACY_COORDINATES["DEMO-0002"]
+    with reposition_demo.CSV.open(newline="", encoding="utf-8") as source:
+        target_a = next((float(r["latitude"]), float(r["longitude"]))
+                        for r in csv.DictReader(source) if r["id"] == "DEMO-0001")
     with Session(engine) as db:
         db.add_all([
             Incident(id="DEMO-0001", category="Theft", occurred_at="2026-09-01T00:00:00Z",
@@ -32,11 +37,36 @@ def test_reposition_dry_run_and_safe_apply(tmp_path, monkeypatch, capsys):
     reposition_demo.main(["--apply"])
     with Session(engine) as db:
         changed = db.get(Incident, "DEMO-0001")
-        assert round(changed.longitude, 6) == 79.810400
+        assert (round(changed.latitude, 6), round(changed.longitude, 6)) == target_a
         assert changed.description == "edited note"
         assert changed.status == "closed"
         assert (db.get(Incident, "DEMO-0002").latitude, db.get(Incident, "DEMO-0002").longitude) == (old_b[0] + .01, old_b[1])
         assert db.get(Incident, "CUSTOM-1").description == "imported row"
         assert len(db.scalars(select(Incident)).all()) == 3
     assert "SKIP DEMO-0002" in capsys.readouterr().out
+    engine.dispose()
+
+
+def test_small_block_fixture_is_redistributed_without_touching_other_records(tmp_path, monkeypatch):
+    engine = create_engine(f"sqlite:///{tmp_path / 'small-block.db'}")
+    Base.metadata.create_all(engine)
+    with reposition_demo.PREVIOUS.open(newline="", encoding="utf-8") as source:
+        previous = next(row for row in csv.DictReader(source) if row["id"] == "DEMO-0003")
+    old = float(previous["old_latitude"]), float(previous["old_longitude"])
+    with Session(engine) as db:
+        db.add(Incident(id="DEMO-0003", source_type="synthetic", category="Other",
+                        occurred_at="2026-09-15T10:00:00Z", latitude=old[0],
+                        longitude=old[1], police_station="Demo Zone C",
+                        description="original but edited note", status="closed"))
+        db.commit()
+    monkeypatch.setattr(reposition_demo, "SessionLocal", sessionmaker(bind=engine))
+    reposition_demo.main([])
+    with Session(engine) as db:
+        assert (db.get(Incident, "DEMO-0003").latitude, db.get(Incident, "DEMO-0003").longitude) == old
+    reposition_demo.main(["--apply"])
+    with Session(engine) as db:
+        updated = db.get(Incident, "DEMO-0003")
+        assert (updated.latitude, updated.longitude) != old
+        assert updated.description == "original but edited note"
+        assert updated.status == "closed"
     engine.dispose()
