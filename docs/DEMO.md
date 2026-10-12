@@ -8,7 +8,7 @@ This presentation runs from the **deployed HTTPS application**, not a local Vite
 
 ## Before presenting — cloud checklist
 
-- **Confirm access ahead of time.** Open [the deployed site](https://crimemap-595311113823.asia-south1.run.app) in the **same browser and network** you will use on stage. The Cloud Run service was originally deployed with an IAM invoker check. If you get **403 before the login screen**, ask the deployment administrator to verify Cloud Run's authentication/invoker setting: browser access requires either an authorized Google Cloud identity or a consciously enabled publicly reachable *synthetic-only* demo. Do not change exposure settings during the talk.
+- **Confirm access ahead of time.** The public landing page now introduces CrimeMap and its benefits; select **Sign in** to reach the protected workspace. The possible citizen complaint progress feature shown on the landing page is **future work only**, not a working complaint tracker. Open [the deployed site](https://crimemap-595311113823.asia-south1.run.app) in the **same browser and network** you will use on stage. The Cloud Run service was originally deployed with an IAM invoker check. If you get **403 before the login screen**, ask the deployment administrator to verify Cloud Run's authentication/invoker setting: browser access requires either an authorized Google Cloud identity or a consciously enabled publicly reachable *synthetic-only* demo. Do not change exposure settings during the talk.
 - **Prepare an app login.** Use a separate **Officer or Administrator** CrimeMap account already created in the cloud database. Administrator is needed to demonstrate **User management / audit history**; Officer is sufficient for incident and plan changes. The initial cloud admin username was `demo-admin`, but **never display or share its password**. Local SQLite usernames/passwords do not automatically work on Cloud Run.
 - **Check readiness.** Sign in, load **Incidents**, **Geospatial Intelligence**, **Analytics** and **Prevention planner**. Verify that fictional incident counts reflect the **current cloud database**, rather than assuming exactly 100: 100 seed fixtures were inserted during first-time initialization, and teammates may have added more.
 - **Use projector-friendly light mode.** CrimeMap defaults to its high-contrast light palette, with a **Light mode / Dark mode** toggle on sign-in and in the workspace header. Choose light mode in advance, use about **100–110% browser zoom** if it fits the screen, and check legibility on the **actual projector**. Theme choice is saved in the browser, not the database.
@@ -28,7 +28,7 @@ A reachable, healthy app should respond with HTTP `200` and `{"status":"ok"}`. A
 
 | Time | Workspace | What to demonstrate and say |
 | --- | --- | --- |
-| **0:00–0:30** | **Incidents** | “This is the live cloud-deployed demo, backed by PostgreSQL. All records are fictional.” Show the current incident count, filtering and search. Highlight that cloud records persist between logins/redeployments. |
+| **0:00–0:30** | **Landing → Incidents** | “This is the live cloud-deployed demo, backed by PostgreSQL. All records are fictional.” Briefly show **Why CrimeMap?**, label complaint tracking as a **future concept only**, then sign in and show fictional incident counts, filters and search. Highlight that cloud records persist between logins/redeployments. |
 | **0:30–1:10** | **Add incident** | Open the form; click/drag the map pin to capture coordinates and suggest a nearby **fictional** demonstration zone. **Cancel** instead of saving unless a prepared synthetic test record is needed. |
 | **1:10–2:00** | **Geospatial intelligence** | Click **Map** on a registry record to locate it, then show **Markers**, **Heatmap** or **Grid analysis → Compare periods**. Point out the descriptive counts, fixed geographic grid and non-predictive interpretation. Operations overlays are simulated, not live patrol/CCTV feeds. |
 | **2:00–2:50** | **Analytics** | Show category, status, date/hour and demonstration-zone summaries. Apply/clear a filter; explain that aggregates cover **all matching records in Cloud SQL**, not just the current registry page. |
@@ -46,7 +46,7 @@ A reachable, healthy app should respond with HTTP `200` and `{"status":"ok"}`. A
 
 **Is this crime prediction or real police intelligence?** No. Heatmaps, grid comparisons, incident analytics and before/later plan reviews show **descriptive counts of synthetic data**. Real analysis would require authorized data, governance and independent validation.
 
-**Are the zones or operational overlays real?** No. Demonstration zones use fictional reference points; patrol/CCTV-style overlays are simulations. The basemap uses OpenStreetMap tiles.
+**Can a resident track a real police complaint here?** Not today. The public introduction only sketches a future privacy-protected case reference and verified progress updates. This demo handles fictional incident statuses, not real complaints or public case lookup.\n\n**Are the zones or operational overlays real?** No. Demonstration zones use fictional reference points; patrol/CCTV-style overlays are simulations. The basemap uses OpenStreetMap tiles.
 
 **Where does a newly created user or imported incident go?** On the deployed site, it is stored in the `crimemap` **Cloud SQL PostgreSQL** database. Passwords are stored as hashes, not plaintext. Confirmed incidents/plans remain after Cloud Run restarts or code redeployments. A local `python3 start.py` session ordinarily uses **separate SQLite data**.
 
@@ -83,10 +83,10 @@ If `npm ci` was run beforehand and nothing changed, only `python3 start.py` is n
 
 These are **on-site checks**; CI does not verify your projector, network, Cloud Run IAM setting or current cloud database state.
 
-- [ ] Cloud Run site loads and an existing **cloud** account signs in; check the desired access setting ahead of time.
+- [ ] Public landing page loads and **Sign in** works; an existing **cloud** account signs in; check the desired access setting ahead of time.
 - [ ] Light mode is readable from the back of the room, and the dark mode toggle still works.
 - [ ] All four workspaces load, the incident **Map** action highlights a record, and both map tiles and grid comparisons render.
-- [ ] Analytics loads with realistic current *fictional* counts, and a presentation PDF downloads successfully.
+- [ ] Cloud incident markers use current persisted database records: editing the source CSV alone does **not** move old seeded coordinates.\n- [ ] Analytics loads with realistic current *fictional* counts, and a presentation PDF downloads successfully.
 - [ ] The Prevention methodology card is readable; a completed plan is prepared if showcasing the count review.
 - [ ] Admin-only user management/audit history is available **if** the presenter is using an admin account.
 - [ ] Imported records or test accounts, **if intentionally created**, persist after refresh; do not change or reset shared demo data unnecessarily.
