@@ -74,6 +74,19 @@ export function importIncidents(file, { skipDuplicates = false } = {}) {
   return request('/api/incidents/import' + suffix, { method: 'POST', body: form });
 }
 
+// These administrator-only methods never alter records without a confirmed POST.
+export function previewDemoRedistribution() {
+  return request('/api/admin/demo-redistribution');
+}
+
+export function applyDemoRedistribution() {
+  return request('/api/admin/demo-redistribution', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ confirmation: 'REDISTRIBUTE_CANONICAL_DEMOS' }),
+  });
+}
+
 export function fetchMapIncidents(bounds, filters, signal) {
   const query = new URLSearchParams({
     south: String(bounds.south),
