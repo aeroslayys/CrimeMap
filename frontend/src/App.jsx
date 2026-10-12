@@ -131,6 +131,7 @@ function App() {
       setIsOpen(false);
       setAccountOpen(false);
       setView('incidents');
+      setShowSignIn(false);
     }
   }
 
