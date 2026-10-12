@@ -457,9 +457,27 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, canManage = 
       }
       polygon.addTo(group);
     }
+    // Two reference-locality pins explain the "from → to" direction visually.
+    // They are NOT exact legal border endpoints, road intersections or police limits.
+    if (zonesMode && selectedZone) {
+      for (const [kind, location] of [
+        ['START', selectedZone.startReference],
+        ['END', selectedZone.endReference],
+      ]) {
+        const label = document.createElement('span');
+        label.textContent = kind + ' · ' + location.label;
+        L.circleMarker([location.latitude, location.longitude], {
+          radius: 7, color: '#ffffff', weight: 2.5,
+          fillColor: selectedZone.color, fillOpacity: 0.95, interactive: false,
+        }).bindTooltip(label, {
+          permanent: true, direction: kind === 'START' ? 'bottom' : 'top',
+          className: 'demo-zone-endpoint-label',
+        }).addTo(group);
+      }
+    }
     group.addTo(map);
     return () => map.removeLayer(group);
-  }, [layer, activeZone, showMarkerZones]);
+  }, [layer, activeZone, showMarkerZones, selectedZone]);
 
   useEffect(() => {
     if (layer !== 'grid' || !activeGridData) return;
@@ -700,7 +718,7 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, canManage = 
         <div className="zone-coverage-heading">
           <div>
             <h2>Where each zone starts and ends</h2>
-            <p>Choose a zone to zoom to its shaded boundary. “From” and “to” are neighborhood landmarks, while the outlined polygon shows the actual illustrative map extent.</p>
+            <p>Choose a zone to zoom to its shaded boundary. “From” and “to” are neighborhood landmarks, while the outlined polygon shows the illustrative extent. Selecting a zone also marks reference START and END localities on the map (not legal border endpoints).</p>
           </div>
           <span className="zone-coverage-disclaimer">DEMO BOUNDARIES · NOT OFFICIAL</span>
         </div>
