@@ -16,6 +16,7 @@ router = APIRouter(prefix="/api/admin", tags=["audit"], dependencies=[Depends(re
 ENTITY_TYPES = ("incident", "prevention_plan", "incident_import")
 ACTIONS = (
     "incident.created", "incident.updated", "incident.deleted", "incident.imported",
+    "incident.demo_redistributed",
     "prevention_plan.created", "prevention_plan.updated",
 )
 
