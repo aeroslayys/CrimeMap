@@ -252,19 +252,20 @@ SELECT COUNT(*) AS synthetic_incident_count FROM incidents;
 
 This does not expose password hashes or personal credentials. The app remains a **synthetic-only demo**.
 
-### Correct all existing synthetic locations
+### Review legacy normalization utilities
 
-For the complete current procedure, including edited/imported synthetic rows, use
-[LAND_ONLY_UPDATE.md](LAND_ONLY_UPDATE.md). The older canonical-only utilities
-below intentionally skip those rows and cannot guarantee all demo rows move.
+Older, broad normalization procedures for imported/edited synthetic records are
+archived in [LAND_ONLY_UPDATE.md](LAND_ONLY_UPDATE.md). They may move user-edited
+pins; do **not** use them when your goal is only to spread canonical DEMO fixtures.
+For the current four-zone distribution use [DEMO_ZONES.md](DEMO_ZONES.md).
 
 ### Correct older fictional offshore pins safely (optional, manual)
 
-The bundled `data/synthetic_incidents.csv` and downloadable sample CSV now use **tighter, intentionally inland fictional locations** for the 100 canonical `DEMO-0001`…`DEMO-0100` incidents. They cluster around inland portions of the city and are not claims about actual crime or verified police jurisdictions. Coordinate envelopes are conservative **approximations**, not an authoritative coastline/land-cover polygon: visually validate the map before presenting.
+The bundled `data/synthetic_incidents.csv` and downloadable sample CSV now use **distributed urban-reference fictional locations** for the 100 canonical `DEMO-0001`…`DEMO-0100` incidents. They span widely separated Puducherry neighborhoods and are not claims about actual crime or verified police jurisdictions. Coordinate envelopes are conservative **approximations**, not an authoritative coastline/land-cover polygon: visually validate the map before presenting.
 
 **Important:** changing the CSV or deploying a new container **does not move records already stored** in Cloud SQL or a developer's local SQLite database. Re-running `scripts.seed_demo` also does not move existing IDs (by design). Do not delete/recreate tables to fix a display issue.
 
-A narrowly scoped coordinate-correction utility is provided: `backend/scripts/reposition_demo.py`. It targets only the canonical 100 `DEMO-` IDs, only where `source_type` is `synthetic`, and only if the existing coordinates match the exact original fixture snapshot. Previously moved records, user-created/imported incidents, accounts, plan statuses, notes and other fields are never overwritten by this command. **It is preview-only unless you explicitly pass `--apply`.**
+A narrowly scoped coordinate-correction utility is provided: `backend/scripts/reposition_demo.py`. It targets only the canonical 100 `DEMO-` IDs, only where `source_type` is `synthetic`, and only if the existing coordinates match the original or previous four-block fixture snapshots. Previously moved records, user-created/imported incidents, accounts, plan statuses, notes and other fields are never overwritten by this command. **It is preview-only unless you explicitly pass `--apply`.**
 
 For a local development database, from the existing repo checkout (no resets/rebootstrap):
 
@@ -324,39 +325,25 @@ These settings operate at the **Cloud Run edge**. CrimeMap login/roles operate *
 
 ## Correct existing canonical fixture coordinates (optional)
 
-**Changing GitHub CSV fixtures does NOT update already stored Cloud SQL or local SQLite records.** The 100 canonical fictional incident rows and the downloadable CSV now have conservative inland coordinates; camera/accident/patrol overlays were also adjusted. Previously seeded DEMO records in your existing database retain their original location until an operator explicitly relocates them.
+The new distributed canonical CSV has **no automatic effect on Cloud SQL or
+local SQLite rows that were previously seeded**. To update those old points,
+first review [the current sector definitions and safeguards](DEMO_ZONES.md).
 
-- `data/seed_land_coordinate_migration.csv` records the old and new coordinates for the original 100 canonical IDs.
-- `backend/scripts/relocate_seed_land.py` is **read-only by default** and compares the original ID, category, timestamp, zone, source, description and coordinates. It never changes accounts, passwords, statuses, plans, manual imports or edited coordinates. Normal seeding remains **insert-only**.
-- The correction script is never run at web app startup, during CI, by `crimemap-init`, or during a normal Cloud Run deployment. Do **not** rerun `crimemap-init` to fix map points.
+- Use `backend/scripts/reposition_demo.py` rather than the older
+  `relocate_seed_land.py` for this latest four-cluster-to-citywide change.
+- The default is a **dry run**, and only the 100 canonical synthetic IDs
+  at recognized prior coordinates are candidates. User-moved pins, imports,
+  edits to other fields, and other source types are preserved.
+- Use a *separate*, purpose-built Cloud Run Job with the latest built image,
+  an explicitly configured Cloud SQL connection and existing app credentials.
+  Review the read-only command `python -m scripts.reposition_demo` logs,
+  take a backup, and only then separately execute
+  `python -m scripts.reposition_demo --apply` if appropriate.
+- Never rerun `crimemap-init` or drop tables to refresh fixture coordinates.
+  A normal web-service deployment changes only code, not stored sample rows.
 
-**Local dry-run:** inside `backend/`, with the existing configured Python environment, run `python -m scripts.relocate_seed_land`. This only prints counts; do not delete or reset any SQLite file.
-
-**Cloud SQL dry-run:** use a **separate Cloud Run Job** with the new app image, existing DB connection and Secret Manager password. An authorized operator can create a read-only review job in Cloud Shell:
-
-```bash
-gcloud config set project crimemap-511218
-export REGION="asia-south1"
-export CONNECTION="$(gcloud sql instances describe crimemap-db --format='value(connectionName)')"
-export SERVICE_ACCOUNT="crimemap-runtime@crimemap-511218.iam.gserviceaccount.com"
-# Replace VERSION-TAG with the actual newly built image tag:
-export IMAGE="asia-south1-docker.pkg.dev/crimemap-511218/crimemap/crimemap:VERSION-TAG"
-
-gcloud run jobs create crimemap-land-review \
-  --region="$REGION" --image="$IMAGE" --service-account="$SERVICE_ACCOUNT" \
-  --set-cloudsql-instances="$CONNECTION" \
-  --set-env-vars="CLOUD_SQL_CONNECTION_NAME=$CONNECTION,DB_NAME=crimemap,DB_USER=crimemap_app" \
-  --set-secrets="DB_PASS=crimemap-db-password:latest" \
-  --command=python --args=-m,scripts.relocate_seed_land --max-retries=0
-
-gcloud run jobs execute crimemap-land-review --region="$REGION" --wait
-gcloud logging read 'resource.type="cloud_run_job" AND resource.labels.job_name="crimemap-land-review"' \
-  --project=crimemap-511218 --limit=20 --format='value(textPayload)'
-```
-
-After reviewing counts **and creating a suitable database backup**, the project owner may separately decide whether to invoke the gated applying form `--apply --acknowledge I-understand-only-canonical-synthetic-coordinates-change`. Only matching original synthetic coordinates are updated in one transaction; manually moved/edited/unrelated records are skipped. **Do not mistake a dry-run for a successful cloud data migration.**
-
-These fixtures are intentionally placed in **conservative inland demonstration clusters**, not checked against a complete GIS coastline/land-mask model. The application does **not** geofence arbitrary new incident imports or user-created coordinates.
+The samples are **fictional**, placed near published urban references and
+not street-snapped or checked against a complete GIS coastline polygon.
 
 ---
 ## Common problems
