@@ -297,6 +297,43 @@ These settings operate at the **Cloud Run edge**. CrimeMap login/roles operate *
 - **Preserve the database**: no `DROP TABLE`, no deleting Cloud SQL, no resetting `backend/crimemap.db`, and no bulk reseeding to fix app issues. Plan a backup/export and database migration before any trial expiration; features and backups available to a promotional Cloud SQL instance can be limited. Local imported CSV records are **not** automatically mirrored to the cloud.
 - Secret Manager stores the *password values*, not GitHub. Never echo secrets to the terminal, commit them, or paste them in issues. The **admin-password secret is only needed for initialization**, not for normal web app operation; remove the init job/unused admin-secret access after confirming success if no longer needed.
 
+## Correct existing canonical fixture coordinates (optional)
+
+**Changing GitHub CSV fixtures does NOT update already stored Cloud SQL or local SQLite records.** The 100 canonical fictional incident rows and the downloadable CSV now have conservative inland coordinates; camera/accident/patrol overlays were also adjusted. Previously seeded DEMO records in your existing database retain their original location until an operator explicitly relocates them.
+
+- `data/seed_land_coordinate_migration.csv` records the old and new coordinates for the original 100 canonical IDs.
+- `backend/scripts/relocate_seed_land.py` is **read-only by default** and compares the original ID, category, timestamp, zone, source, description and coordinates. It never changes accounts, passwords, statuses, plans, manual imports or edited coordinates. Normal seeding remains **insert-only**.
+- The correction script is never run at web app startup, during CI, by `crimemap-init`, or during a normal Cloud Run deployment. Do **not** rerun `crimemap-init` to fix map points.
+
+**Local dry-run:** inside `backend/`, with the existing configured Python environment, run `python -m scripts.relocate_seed_land`. This only prints counts; do not delete or reset any SQLite file.
+
+**Cloud SQL dry-run:** use a **separate Cloud Run Job** with the new app image, existing DB connection and Secret Manager password. An authorized operator can create a read-only review job in Cloud Shell:
+
+```bash
+gcloud config set project crimemap-511218
+export REGION="asia-south1"
+export CONNECTION="$(gcloud sql instances describe crimemap-db --format='value(connectionName)')"
+export SERVICE_ACCOUNT="crimemap-runtime@crimemap-511218.iam.gserviceaccount.com"
+# Replace VERSION-TAG with the actual newly built image tag:
+export IMAGE="asia-south1-docker.pkg.dev/crimemap-511218/crimemap/crimemap:VERSION-TAG"
+
+gcloud run jobs create crimemap-land-review \
+  --region="$REGION" --image="$IMAGE" --service-account="$SERVICE_ACCOUNT" \
+  --set-cloudsql-instances="$CONNECTION" \
+  --set-env-vars="CLOUD_SQL_CONNECTION_NAME=$CONNECTION,DB_NAME=crimemap,DB_USER=crimemap_app" \
+  --set-secrets="DB_PASS=crimemap-db-password:latest" \
+  --command=python --args=-m,scripts.relocate_seed_land --max-retries=0
+
+gcloud run jobs execute crimemap-land-review --region="$REGION" --wait
+gcloud logging read 'resource.type="cloud_run_job" AND resource.labels.job_name="crimemap-land-review"' \
+  --project=crimemap-511218 --limit=20 --format='value(textPayload)'
+```
+
+After reviewing counts **and creating a suitable database backup**, the project owner may separately decide whether to invoke the gated applying form `--apply --acknowledge I-understand-only-canonical-synthetic-coordinates-change`. Only matching original synthetic coordinates are updated in one transaction; manually moved/edited/unrelated records are skipped. **Do not mistake a dry-run for a successful cloud data migration.**
+
+These fixtures are intentionally placed in **conservative inland demonstration clusters**, not checked against a complete GIS coastline/land-mask model. The application does **not** geofence arbitrary new incident imports or user-created coordinates.
+
+---
 ## Common problems
 
 | Symptom | What it usually means | What to inspect |
