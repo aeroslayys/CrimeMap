@@ -1,6 +1,6 @@
 # CrimeMap
 
-**Geospatial Crime Intelligence, Analytics & Decision Support** — a local prototype for Puducherry Police Hackathon 2026 (Problem Statement 02).
+**Geospatial Crime Intelligence, Analytics & Decision Support** — a cloud-deployed, locally runnable prototype for Puducherry Police Hackathon 2026 (Problem Statement 02).
 
 > **Synthetic demonstration data only.** All incident locations, zone labels, patrol/CCTV overlays and reports are fictional. CrimeMap is **not** a real police platform, validated crime forecast or operational decision-making tool.
 
@@ -61,6 +61,18 @@ If updating on Windows, pull the new code, then install updated dependencies ins
 
 
 For optional PostgreSQL, security configuration, detailed role permissions, backups and test commands, see [Developer setup](docs/SETUP.md).
+
+## Public landing page and proposed complaint tracking
+
+The deployed app opens to a **public, informational landing page** describing what CrimeMap is, how it helps reviewers explore *fictional* incident patterns, its differentiators, and why decisions still require human review. Select **Sign in** for the role-protected workspaces. After login, choose **About CrimeMap** in the navigation to return to the introduction.
+
+The landing page includes a **proposed future idea**, not an implemented feature: privacy-protected citizen complaint progress with verified case references, identity checks, authorized updates and simple status milestones. **There is no real complaint intake, public case lookup, verified citizen identity system, or live police integration in this hackathon demo.** Never submit real personal/case data.
+
+## Inland fictional data fixtures
+
+The 100 canonical fictional incidents in `data/synthetic_incidents.csv` and the downloadable sample CSV were repositioned into **conservative inland demonstration clusters** near Puducherry. Synthetic CCTV, accident and patrol overlays were adjusted too. These are illustrative land-based demo points, **not surveyed police reports, verified jurisdiction boundaries or a full GIS coastline mask**. Users can still create/import records in arbitrary locations; the app does not globally geofence new incidents.
+
+**Previously seeded cloud or local records will NOT change merely because the repo or Cloud Run image was updated.** `scripts.seed_demo` is deliberately insert-only and preserves existing records. To review a strictly opt-in location-only correction of unmodified original `DEMO-` rows, see [the cloud deployment handoff](docs/CLOUD_DEPLOYMENT.md#correct-existing-canonical-fixture-coordinates-optional). **Do not reset your existing databases or accounts** to refresh the fixture positions.
 
 ## What it does
 
