@@ -1,10 +1,11 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
 import {
   ArrowLeft, ArrowRight, Database, FileUp, Filter, LayoutDashboard, UsersRound, LogOut, KeyRound, HeartHandshake,
-  MapPinned, Plus, Search, ShieldCheck, Trash2, X, AlertCircle, CheckCircle2,
+  MapPinned, Plus, Search, ShieldCheck, Trash2, X, AlertCircle, CheckCircle2, Info,
 } from 'lucide-react';
 import { CATEGORIES, STATUSES, changeStatus, changeOwnPassword, createIncident, listIncidents, removeIncident, signOut, whoAmI } from './api';
 import Login from './modules/auth/Login.jsx';
+import Welcome from './components/Welcome.jsx';
 import ThemeToggle from './components/ThemeToggle.jsx';
 import { applyTheme, readTheme } from './theme.js';
 import './modules/auth/auth.css';
@@ -50,6 +51,7 @@ function App() {
   const toggleTheme = () => setTheme(current => current === 'light' ? 'dark' : 'light');
   useEffect(() => { applyTheme(theme); }, [theme]);
   const [user, setUser] = useState(null);
+  const [showSignIn, setShowSignIn] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
   const [accountOpen, setAccountOpen] = useState(false);
   const [oldPassword, setOldPassword] = useState('');
@@ -232,13 +234,16 @@ function App() {
   }
 
   if (authLoading) return <div className="auth-loading" role="status">Checking CrimeMap session…</div>;
-  if (!user) return <Login theme={theme} onToggleTheme={toggleTheme} onLogin={profile => { setUser(profile); setMapFocus(null); setView('incidents'); setRefresh(n => n + 1); }} />;
+  if (!user) return showSignIn
+    ? <Login theme={theme} onToggleTheme={toggleTheme} onBack={() => setShowSignIn(false)} onLogin={profile => { setUser(profile); setMapFocus(null); setView('incidents'); setRefresh(n => n + 1); }} />
+    : <Welcome onSignIn={() => setShowSignIn(true)} />;
 
   return (
     <div className="app-shell">
       <a className="skip-link" href="#crimemap-main-content">Skip to main content</a>
       <aside className="sidebar" aria-label="Primary navigation">
         <div className="logo"><span className="logo-symbol"><MapPinned size={22} /></span><span>Crime<span className="accent">Map</span><small>INTELLIGENCE PLATFORM</small></span></div>
+        <button type="button" aria-current={view === "overview" ? "page" : undefined} className={`nav-item nav-overview ${view === "overview" ? "selected" : ""}`} onClick={() => setView("overview")}><Info size={17}/> About CrimeMap</button>
         <div className="nav-title">WORKSPACE</div>
         <nav className="workspace-nav" aria-label="Workspaces">
         <button type="button" aria-current={view === 'incidents' ? 'page' : undefined} className={`nav-item ${view === 'incidents' ? 'selected' : ''}`} onClick={() => setView('incidents')}><Database size={17} /> Incidents <span className="nav-current">01</span></button>
@@ -251,9 +256,9 @@ function App() {
       </aside>
 
       <main className="main-area" id="crimemap-main-content" tabIndex={-1}>
-        <header className="topbar"><span className="breadcrumb">CrimeMap <span>/</span> {view === 'map' ? 'Geospatial view' : view === 'analytics' ? 'Analysis' : view === 'prevention' ? 'Decision support' : view === 'users' ? 'Administration' : 'Data management'} <span>/</span> <strong>{view === 'map' ? 'Geospatial intelligence' : view === 'analytics' ? 'Analytics' : view === 'prevention' ? 'Prevention planner' : view === 'users' ? 'Users' : 'Incidents'}</strong></span><div className="auth-actions"><ThemeToggle theme={theme} onToggle={toggleTheme} /><span className="auth-role-chip">{user.role}</span><button type="button" className="button subtle" onClick={() => setAccountOpen(true)}><KeyRound size={16} /> Password</button><button type="button" className="button subtle" onClick={logout}><LogOut size={16} /> Sign out</button></div></header>
+        <header className="topbar"><span className="breadcrumb">CrimeMap <span>/</span> {view === "overview" ? "Overview" : view === 'map' ? 'Geospatial view' : view === 'analytics' ? 'Analysis' : view === 'prevention' ? 'Decision support' : view === 'users' ? 'Administration' : 'Data management'} <span>/</span> <strong>{view === 'overview' ? 'About CrimeMap' : view === 'map' ? 'Geospatial intelligence' : view === 'analytics' ? 'Analytics' : view === 'prevention' ? 'Prevention planner' : view === 'users' ? 'Users' : 'Incidents'}</strong></span><div className="auth-actions"><ThemeToggle theme={theme} onToggle={toggleTheme} /><span className="auth-role-chip">{user.role}</span><button type="button" className="button subtle" onClick={() => setAccountOpen(true)}><KeyRound size={16} /> Password</button><button type="button" className="button subtle" onClick={logout}><LogOut size={16} /> Sign out</button></div></header>
         <div className="content">
-          {view === 'users' && isAdmin ? <Suspense fallback={<div className="panel empty" role="status">Loading user management…</div>}><Users currentUser={user} /></Suspense> : view === 'prevention' && canAnalyze ? <Suspense fallback={<div className="panel empty" role="status">Loading synthetic prevention planner…</div>}><Prevention canWrite={canWrite} refresh={refresh} /></Suspense> : view === 'analytics' && canAnalyze ? <Suspense fallback={<div className="panel empty" role="status">SYNTHETIC DEMONSTRATION DATA · Loading analytics…</div>}><AnalyticsDashboard refresh={refresh} /></Suspense> : view === 'map' ? <CrimeMap refresh={refresh} canAnalyze={canAnalyze} focusIncident={mapFocus}
+          {view === 'overview' ? <Welcome embedded onOpenWorkspace={() => setView('incidents')} /> : view === 'users' && isAdmin ? <Suspense fallback={<div className="panel empty" role="status">Loading user management…</div>}><Users currentUser={user} /></Suspense> : view === 'prevention' && canAnalyze ? <Suspense fallback={<div className="panel empty" role="status">Loading synthetic prevention planner…</div>}><Prevention canWrite={canWrite} refresh={refresh} /></Suspense> : view === 'analytics' && canAnalyze ? <Suspense fallback={<div className="panel empty" role="status">SYNTHETIC DEMONSTRATION DATA · Loading analytics…</div>}><AnalyticsDashboard refresh={refresh} /></Suspense> : view === 'map' ? <CrimeMap refresh={refresh} canAnalyze={canAnalyze} focusIncident={mapFocus}
                 onClearFocus={() => setMapFocus(null)} /> : <>
           <div className="heading-row">
             <div><div className="eyebrow">MODULE 01 · INCIDENT MANAGEMENT</div><h1>Crime incident records</h1><p className="intro">Manage location-based incident data for mapping and analysis.</p></div>
