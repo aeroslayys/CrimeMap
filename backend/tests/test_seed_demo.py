@@ -33,10 +33,10 @@ def test_bundled_samples_are_exactly_100_and_consistent():
         assert 11.9 <= float(uploaded["latitude"]) <= 12.0
         # Conservative inland-only fixture envelopes (not a coastline GIS model).
         inland = {
-            "Demo Zone A": (11.9315, 11.9350, 79.827, 79.832),
-            "Demo Zone B": (11.9490, 11.9525, 79.817, 79.822),
-            "Demo Zone C": (11.9175, 11.9210, 79.801, 79.807),
-            "Demo Zone D": (11.9425, 11.9460, 79.820, 79.826),
+            "Demo Zone A": (11.9320, 11.9334, 79.8103, 79.8117),
+            "Demo Zone B": (11.9566, 11.9580, 79.8220, 79.8234),
+            "Demo Zone C": (11.9214, 11.9228, 79.8153, 79.8167),
+            "Demo Zone D": (11.9301, 11.9315, 79.8055, 79.8069),
         }
         lo_lat, hi_lat, lo_lon, hi_lon = inland[uploaded["police_station"]]
         assert lo_lat <= float(uploaded["latitude"]) <= hi_lat
