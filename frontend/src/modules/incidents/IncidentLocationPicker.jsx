@@ -8,7 +8,7 @@ import './incident-location.css';
 
 // The same Leaflet/OpenStreetMap stack used by Geospatial Intelligence.
 // Nothing is saved or geocoded until the parent form is explicitly submitted.
-const CENTER = [11.935, 79.83];
+const CENTER = [11.94, 79.81];
 const PIN_ICON = L.divIcon({
   className: 'incident-picker-pin-icon',
   html: '<span class="incident-picker-pin-dot" aria-hidden="true"></span>',
@@ -35,7 +35,7 @@ export default function IncidentLocationPicker({ latitude, longitude, zone = '',
     if (!container) return;
 
     const map = L.map(container, {
-      center: CENTER, zoom: 13, keyboard: true, scrollWheelZoom: false,
+      center: CENTER, zoom: 11, keyboard: true, scrollWheelZoom: false,
       zoomControl: true,
     });
     mapRef.current = map;
@@ -116,7 +116,7 @@ export default function IncidentLocationPicker({ latitude, longitude, zone = '',
 
   function resetMap() {
     if (disabled || !mapRef.current) return;
-    mapRef.current.setView(CENTER, 13);
+    mapRef.current.setView(CENTER, 11);
   }
 
   return <div className="incident-picker" aria-label="Choose incident location">
@@ -141,7 +141,7 @@ export default function IncidentLocationPicker({ latitude, longitude, zone = '',
         <span>Selected: <strong>Lat {latitude.toFixed(6)}, Lon {longitude.toFixed(6)}</strong></span>
         <span className="incident-picker-zone">
           Zone: <strong>{zone || 'Not assigned'}</strong>
-          <small>{zoneWasEdited ? 'Manual value' : suggestedZone ? 'Suggested from the nearest fictional reference point' : 'No nearby demonstration-zone reference'}</small>
+          <small>{zoneWasEdited ? 'Manual value' : suggestedZone ? 'Suggested from the illustrative zone polygon' : 'Outside the demonstration zone polygons'}</small>
         </span>
         <button type="button" disabled={disabled} onClick={() => onChange({ latitude: null, longitude: null })}>
           Clear pin
@@ -153,7 +153,7 @@ export default function IncidentLocationPicker({ latitude, longitude, zone = '',
     </div>
     <p className="incident-picker-hint">
       Keyboard: focus the map and use arrow keys to pan, then choose <strong>Use map center</strong>.
-      Use +/− to zoom. Coordinates and a nearby fictional zone are suggested automatically. The zone is not a verified police-station boundary.
+      Use +/− to zoom. Coordinates and the containing fictional map zone are suggested automatically. The zone is not a verified police-station boundary.
     </p>
   </div>;
 }
