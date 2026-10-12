@@ -32,3 +32,25 @@ test('seed is broadly distributed across the Puducherry demo study area', () => 
     [Number(row.latitude).toFixed(2), Number(row.longitude).toFixed(2)].join(',')));
   assert.ok(neighborhoods.size >= 15);
 });
+
+
+test('each boundary has an explicit geographic from/to description and accurate limits', () => {
+  const names = new Set();
+  for (const zone of DEMO_ZONES) {
+    assert.ok(zone.from && zone.to && zone.from !== zone.to);
+    assert.ok(zone.direction);
+    assert.ok(zone.coverage.includes('→'));
+    assert.ok(!names.has(zone.short));
+    names.add(zone.short);
+    assert.deepEqual(zone.ring[0], zone.ring.at(-1), 'Polygon must be a closed ring');
+    const latitudes = zone.ring.map(([, latitude]) => latitude);
+    const longitudes = zone.ring.map(([longitude]) => longitude);
+    for (const limit of [
+      Math.min(...latitudes), Math.max(...latitudes),
+      Math.min(...longitudes), Math.max(...longitudes),
+    ]) {
+      assert.ok(zone.extent.includes(limit.toFixed(3)),
+        `${zone.id}: extent does not describe polygon coordinate ${limit.toFixed(3)}`);
+    }
+  }
+});
