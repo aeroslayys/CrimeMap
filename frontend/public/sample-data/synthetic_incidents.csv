@@ -1,101 +1,101 @@
 category,occurred_at,latitude,longitude,police_station,description,status
-Theft,2026-09-01T00:00:00+05:30,11.932100,79.810400,Demo Zone A,SYNTHETIC DEMO: Not a real police incident.,reported
-Vehicle Theft,2026-09-08T05:01:00+05:30,11.957225,79.822925,Demo Zone B,SYNTHETIC DEMO: Not a real police incident.,under_investigation
-Burglary,2026-09-15T10:02:00+05:30,11.922550,79.815775,Demo Zone C,SYNTHETIC DEMO: Not a real police incident.,closed
-Robbery,2026-09-22T15:03:00+05:30,11.930500,79.806800,Demo Zone D,SYNTHETIC DEMO: Not a real police incident.,reported
-Assault,2026-09-29T20:04:00+05:30,11.932925,79.811150,Demo Zone A,SYNTHETIC DEMO: Not a real police incident.,under_investigation
-Cybercrime,2026-09-06T01:05:00+05:30,11.956775,79.822400,Demo Zone B,SYNTHETIC DEMO: Not a real police incident.,closed
-Vandalism,2026-09-13T06:06:00+05:30,11.922100,79.816525,Demo Zone C,SYNTHETIC DEMO: Not a real police incident.,reported
-Other,2026-09-20T11:07:00+05:30,11.931325,79.806275,Demo Zone D,SYNTHETIC DEMO: Not a real police incident.,under_investigation
-Theft,2026-09-27T16:08:00+05:30,11.932475,79.810625,Demo Zone A,SYNTHETIC DEMO: Not a real police incident.,closed
-Vehicle Theft,2026-09-04T21:09:00+05:30,11.957600,79.823150,Demo Zone B,SYNTHETIC DEMO: Not a real police incident.,reported
-Burglary,2026-09-11T02:10:00+05:30,11.921650,79.816000,Demo Zone C,SYNTHETIC DEMO: Not a real police incident.,under_investigation
-Robbery,2026-09-18T07:11:00+05:30,11.930875,79.805750,Demo Zone D,SYNTHETIC DEMO: Not a real police incident.,closed
-Assault,2026-09-25T12:12:00+05:30,11.933300,79.811375,Demo Zone A,SYNTHETIC DEMO: Not a real police incident.,reported
-Cybercrime,2026-09-02T17:13:00+05:30,11.957150,79.822625,Demo Zone B,SYNTHETIC DEMO: Not a real police incident.,under_investigation
-Vandalism,2026-09-09T22:14:00+05:30,11.922475,79.815475,Demo Zone C,SYNTHETIC DEMO: Not a real police incident.,closed
-Other,2026-09-16T03:15:00+05:30,11.930425,79.806500,Demo Zone D,SYNTHETIC DEMO: Not a real police incident.,reported
-Theft,2026-09-23T08:16:00+05:30,11.932850,79.810850,Demo Zone A,SYNTHETIC DEMO: Not a real police incident.,under_investigation
-Vehicle Theft,2026-09-30T13:17:00+05:30,11.956700,79.822100,Demo Zone B,SYNTHETIC DEMO: Not a real police incident.,closed
-Burglary,2026-09-07T18:18:00+05:30,11.922025,79.816225,Demo Zone C,SYNTHETIC DEMO: Not a real police incident.,reported
-Robbery,2026-09-14T23:19:00+05:30,11.931250,79.805975,Demo Zone D,SYNTHETIC DEMO: Not a real police incident.,under_investigation
-Assault,2026-09-21T04:20:00+05:30,11.932400,79.811600,Demo Zone A,SYNTHETIC DEMO: Not a real police incident.,closed
-Cybercrime,2026-09-28T09:21:00+05:30,11.957525,79.822850,Demo Zone B,SYNTHETIC DEMO: Not a real police incident.,reported
-Vandalism,2026-09-05T14:22:00+05:30,11.921575,79.815700,Demo Zone C,SYNTHETIC DEMO: Not a real police incident.,under_investigation
-Other,2026-09-12T19:23:00+05:30,11.930800,79.806725,Demo Zone D,SYNTHETIC DEMO: Not a real police incident.,closed
-Theft,2026-09-19T00:24:00+05:30,11.933225,79.811075,Demo Zone A,SYNTHETIC DEMO: Not a real police incident.,reported
-Vehicle Theft,2026-09-26T05:25:00+05:30,11.957075,79.822325,Demo Zone B,SYNTHETIC DEMO: Not a real police incident.,under_investigation
-Burglary,2026-09-03T10:26:00+05:30,11.922400,79.816450,Demo Zone C,SYNTHETIC DEMO: Not a real police incident.,closed
-Robbery,2026-09-10T15:27:00+05:30,11.930350,79.806200,Demo Zone D,SYNTHETIC DEMO: Not a real police incident.,reported
-Assault,2026-09-17T20:28:00+05:30,11.932775,79.810550,Demo Zone A,SYNTHETIC DEMO: Not a real police incident.,under_investigation
-Cybercrime,2026-09-24T01:29:00+05:30,11.957900,79.823075,Demo Zone B,SYNTHETIC DEMO: Not a real police incident.,closed
-Vandalism,2026-09-01T06:30:00+05:30,11.921950,79.815925,Demo Zone C,SYNTHETIC DEMO: Not a real police incident.,reported
-Other,2026-09-08T11:31:00+05:30,11.931175,79.805675,Demo Zone D,SYNTHETIC DEMO: Not a real police incident.,under_investigation
-Theft,2026-09-15T16:32:00+05:30,11.932325,79.811300,Demo Zone A,SYNTHETIC DEMO: Not a real police incident.,closed
-Vehicle Theft,2026-09-22T21:33:00+05:30,11.957450,79.822550,Demo Zone B,SYNTHETIC DEMO: Not a real police incident.,reported
-Burglary,2026-09-29T02:34:00+05:30,11.921500,79.815400,Demo Zone C,SYNTHETIC DEMO: Not a real police incident.,under_investigation
-Robbery,2026-09-06T07:35:00+05:30,11.930725,79.806425,Demo Zone D,SYNTHETIC DEMO: Not a real police incident.,closed
-Robbery,2026-08-11T12:19:00+05:30,11.933150,79.810775,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0037; not a police report.,reported
-Vandalism,2026-08-14T00:26:00+05:30,11.930500,79.806800,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0038; not a police report.,reported
-Burglary,2026-08-27T10:33:00+05:30,11.931025,79.806350,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0039; not a police report.,reported
-Theft,2026-09-03T04:40:00+05:30,11.956775,79.822400,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0040; not a police report.,reported
-Assault,2026-09-04T06:47:00+05:30,11.957300,79.823225,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0041; not a police report.,under_investigation
-Assault,2026-09-13T18:54:00+05:30,11.957825,79.822775,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0042; not a police report.,under_investigation
-Vandalism,2026-10-04T21:01:00+05:30,11.930575,79.805825,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0043; not a police report.,reported
-Other,2026-09-29T06:08:00+05:30,11.957600,79.823150,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0044; not a police report.,closed
-Theft,2026-07-14T01:15:00+05:30,11.956850,79.822700,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0045; not a police report.,closed
-Vandalism,2026-08-11T10:22:00+05:30,11.930875,79.805750,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0046; not a police report.,under_investigation
-Burglary,2026-07-29T20:29:00+05:30,11.931400,79.806575,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0047; not a police report.,reported
-Other,2026-08-13T14:36:00+05:30,11.930650,79.806125,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0048; not a police report.,reported
-Assault,2026-09-09T00:43:00+05:30,11.957675,79.822175,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0049; not a police report.,reported
-Vandalism,2026-09-21T20:50:00+05:30,11.956925,79.823000,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0050; not a police report.,reported
-Robbery,2026-10-02T22:57:00+05:30,11.922250,79.815850,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0051; not a police report.,reported
-Theft,2026-07-06T16:04:00+05:30,11.956700,79.822100,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0052; not a police report.,under_investigation
-Cybercrime,2026-10-07T11:11:00+05:30,11.932625,79.811225,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0053; not a police report.,under_investigation
-Vehicle Theft,2026-07-09T16:18:00+05:30,11.922550,79.815775,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0054; not a police report.,under_investigation
-Theft,2026-07-26T07:25:00+05:30,11.932400,79.811600,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0055; not a police report.,under_investigation
-Other,2026-08-07T00:32:00+05:30,11.931025,79.806350,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0056; not a police report.,reported
-Theft,2026-08-15T07:39:00+05:30,11.956775,79.822400,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0057; not a police report.,under_investigation
-Other,2026-08-25T05:46:00+05:30,11.932700,79.811525,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0058; not a police report.,reported
-Other,2026-08-25T17:53:00+05:30,11.933225,79.811075,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0059; not a police report.,reported
-Vehicle Theft,2026-10-05T01:00:00+05:30,11.921875,79.815625,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0060; not a police report.,under_investigation
-Assault,2026-10-01T02:07:00+05:30,11.922400,79.816450,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0061; not a police report.,closed
-Robbery,2026-07-04T05:14:00+05:30,11.932250,79.811000,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0062; not a police report.,closed
-Robbery,2026-07-03T19:21:00+05:30,11.922175,79.815550,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0063; not a police report.,reported
-Other,2026-07-18T18:28:00+05:30,11.931400,79.806575,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0064; not a police report.,under_investigation
-Vandalism,2026-08-06T04:35:00+05:30,11.921950,79.815925,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0065; not a police report.,closed
-Assault,2026-08-19T08:42:00+05:30,11.957675,79.822175,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0066; not a police report.,under_investigation
-Robbery,2026-09-01T20:49:00+05:30,11.956925,79.823000,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0067; not a police report.,closed
-Burglary,2026-08-30T23:56:00+05:30,11.932850,79.810850,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0068; not a police report.,closed
-Vehicle Theft,2026-10-02T17:03:00+05:30,11.956700,79.822100,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0069; not a police report.,under_investigation
-Vehicle Theft,2026-09-19T19:10:00+05:30,11.957225,79.822925,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0070; not a police report.,reported
-Other,2026-10-05T01:17:00+05:30,11.957750,79.822475,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0071; not a police report.,closed
-Vandalism,2026-07-02T22:24:00+05:30,11.957000,79.823300,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0072; not a police report.,closed
-Vehicle Theft,2026-07-16T04:31:00+05:30,11.932925,79.811150,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0073; not a police report.,under_investigation
-Cybercrime,2026-07-24T22:38:00+05:30,11.956775,79.822400,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0074; not a police report.,under_investigation
-Other,2026-08-11T23:45:00+05:30,11.957300,79.823225,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0075; not a police report.,closed
-Vehicle Theft,2026-09-04T04:52:00+05:30,11.933225,79.811075,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0076; not a police report.,closed
-Vehicle Theft,2026-09-11T10:59:00+05:30,11.957075,79.822325,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0077; not a police report.,reported
-Vandalism,2026-09-24T01:06:00+05:30,11.933000,79.811450,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0078; not a police report.,under_investigation
-Robbery,2026-09-27T05:13:00+05:30,11.930350,79.806200,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0079; not a police report.,reported
-Assault,2026-07-11T22:20:00+05:30,11.922175,79.815550,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0080; not a police report.,closed
-Burglary,2026-07-03T23:27:00+05:30,11.922700,79.816375,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0081; not a police report.,closed
-Vehicle Theft,2026-08-07T18:34:00+05:30,11.921950,79.815925,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0082; not a police report.,closed
-Robbery,2026-07-25T03:41:00+05:30,11.922475,79.815475,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0083; not a police report.,reported
-Assault,2026-08-11T04:48:00+05:30,11.932325,79.811300,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0084; not a police report.,under_investigation
-Assault,2026-09-11T23:55:00+05:30,11.930950,79.806050,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0085; not a police report.,closed
-Burglary,2026-09-01T11:02:00+05:30,11.921500,79.815400,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0086; not a police report.,closed
-Other,2026-09-06T01:09:00+05:30,11.922025,79.816225,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0087; not a police report.,reported
-Other,2026-09-27T06:16:00+05:30,11.931250,79.805975,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0088; not a police report.,reported
-Burglary,2026-07-04T23:23:00+05:30,11.957000,79.823300,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0089; not a police report.,under_investigation
-Vandalism,2026-07-15T12:30:00+05:30,11.931025,79.806350,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0090; not a police report.,under_investigation
-Vandalism,2026-07-17T04:37:00+05:30,11.930275,79.805900,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0091; not a police report.,reported
-Assault,2026-07-29T14:44:00+05:30,11.957300,79.823225,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0092; not a police report.,reported
-Burglary,2026-08-24T15:51:00+05:30,11.933225,79.811075,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0093; not a police report.,reported
-Vehicle Theft,2026-08-19T15:58:00+05:30,11.921875,79.815625,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0094; not a police report.,closed
-Robbery,2026-09-24T14:05:00+05:30,11.931100,79.806650,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0095; not a police report.,reported
-Burglary,2026-09-27T08:12:00+05:30,11.956850,79.822700,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0096; not a police report.,closed
-Robbery,2026-07-03T02:19:00+05:30,11.932775,79.810550,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0097; not a police report.,under_investigation
-Cybercrime,2026-07-07T10:26:00+05:30,11.931400,79.806575,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0098; not a police report.,reported
-Burglary,2026-07-11T08:33:00+05:30,11.957150,79.822625,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0099; not a police report.,under_investigation
-Theft,2026-08-08T05:40:00+05:30,11.922475,79.815475,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0100; not a police report.,closed
+Theft,2026-09-01T00:00:00+05:30,12.031322,79.864317,Demo Zone A,SYNTHETIC DEMO: Not a real police incident.,reported
+Vehicle Theft,2026-09-08T05:01:00+05:30,11.935252,79.827538,Demo Zone B,SYNTHETIC DEMO: Not a real police incident.,under_investigation
+Burglary,2026-09-15T10:02:00+05:30,11.921680,79.816358,Demo Zone C,SYNTHETIC DEMO: Not a real police incident.,closed
+Robbery,2026-09-22T15:03:00+05:30,11.939076,79.790370,Demo Zone D,SYNTHETIC DEMO: Not a real police incident.,reported
+Assault,2026-09-29T20:04:00+05:30,11.989739,79.832287,Demo Zone A,SYNTHETIC DEMO: Not a real police incident.,under_investigation
+Cybercrime,2026-09-06T01:05:00+05:30,11.930397,79.818784,Demo Zone B,SYNTHETIC DEMO: Not a real police incident.,closed
+Vandalism,2026-09-13T06:06:00+05:30,11.915811,79.807175,Demo Zone C,SYNTHETIC DEMO: Not a real police incident.,reported
+Other,2026-09-20T11:07:00+05:30,11.949116,79.796807,Demo Zone D,SYNTHETIC DEMO: Not a real police incident.,under_investigation
+Theft,2026-09-27T16:08:00+05:30,11.958142,79.823303,Demo Zone A,SYNTHETIC DEMO: Not a real police incident.,closed
+Vehicle Theft,2026-09-04T21:09:00+05:30,11.929494,79.824047,Demo Zone B,SYNTHETIC DEMO: Not a real police incident.,reported
+Burglary,2026-09-11T02:10:00+05:30,11.905600,79.808079,Demo Zone C,SYNTHETIC DEMO: Not a real police incident.,under_investigation
+Robbery,2026-09-18T07:11:00+05:30,11.930416,79.806790,Demo Zone D,SYNTHETIC DEMO: Not a real police incident.,closed
+Assault,2026-09-25T12:12:00+05:30,11.958570,79.814472,Demo Zone A,SYNTHETIC DEMO: Not a real police incident.,reported
+Cybercrime,2026-09-02T17:13:00+05:30,11.928984,79.814804,Demo Zone B,SYNTHETIC DEMO: Not a real police incident.,under_investigation
+Vandalism,2026-09-09T22:14:00+05:30,11.895516,79.808040,Demo Zone C,SYNTHETIC DEMO: Not a real police incident.,closed
+Other,2026-09-16T03:15:00+05:30,11.912499,79.754970,Demo Zone D,SYNTHETIC DEMO: Not a real police incident.,reported
+Theft,2026-09-23T08:16:00+05:30,11.948402,79.830532,Demo Zone A,SYNTHETIC DEMO: Not a real police incident.,under_investigation
+Vehicle Theft,2026-09-30T13:17:00+05:30,11.934990,79.816642,Demo Zone B,SYNTHETIC DEMO: Not a real police incident.,closed
+Burglary,2026-09-07T18:18:00+05:30,11.855370,79.811231,Demo Zone C,SYNTHETIC DEMO: Not a real police incident.,reported
+Robbery,2026-09-14T23:19:00+05:30,11.892667,79.738266,Demo Zone D,SYNTHETIC DEMO: Not a real police incident.,under_investigation
+Assault,2026-09-21T04:20:00+05:30,11.949666,79.836770,Demo Zone A,SYNTHETIC DEMO: Not a real police incident.,closed
+Cybercrime,2026-09-28T09:21:00+05:30,11.938010,79.820930,Demo Zone B,SYNTHETIC DEMO: Not a real police incident.,reported
+Vandalism,2026-09-05T14:22:00+05:30,11.920813,79.816375,Demo Zone C,SYNTHETIC DEMO: Not a real police incident.,under_investigation
+Other,2026-09-12T19:23:00+05:30,11.861150,79.749920,Demo Zone D,SYNTHETIC DEMO: Not a real police incident.,closed
+Theft,2026-09-19T00:24:00+05:30,11.958672,79.834317,Demo Zone A,SYNTHETIC DEMO: Not a real police incident.,reported
+Vehicle Theft,2026-09-26T05:25:00+05:30,11.936572,79.828896,Demo Zone B,SYNTHETIC DEMO: Not a real police incident.,under_investigation
+Burglary,2026-09-03T10:26:00+05:30,11.914944,79.807192,Demo Zone C,SYNTHETIC DEMO: Not a real police incident.,closed
+Robbery,2026-09-10T15:27:00+05:30,11.862054,79.781543,Demo Zone D,SYNTHETIC DEMO: Not a real police incident.,reported
+Assault,2026-09-17T20:28:00+05:30,12.030640,79.864792,Demo Zone A,SYNTHETIC DEMO: Not a real police incident.,under_investigation
+Cybercrime,2026-09-24T01:29:00+05:30,11.931717,79.817921,Demo Zone B,SYNTHETIC DEMO: Not a real police incident.,closed
+Vandalism,2026-09-01T06:30:00+05:30,11.904733,79.808095,Demo Zone C,SYNTHETIC DEMO: Not a real police incident.,reported
+Other,2026-09-08T11:31:00+05:30,11.940616,79.790845,Demo Zone D,SYNTHETIC DEMO: Not a real police incident.,under_investigation
+Theft,2026-09-15T16:32:00+05:30,11.989057,79.832761,Demo Zone A,SYNTHETIC DEMO: Not a real police incident.,closed
+Vehicle Theft,2026-09-22T21:33:00+05:30,11.930814,79.823184,Demo Zone B,SYNTHETIC DEMO: Not a real police incident.,reported
+Burglary,2026-09-29T02:34:00+05:30,11.894649,79.808057,Demo Zone C,SYNTHETIC DEMO: Not a real police incident.,under_investigation
+Robbery,2026-09-06T07:35:00+05:30,11.950656,79.797281,Demo Zone D,SYNTHETIC DEMO: Not a real police incident.,closed
+Robbery,2026-08-11T12:19:00+05:30,11.957460,79.821556,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0037; not a police report.,reported
+Vandalism,2026-08-14T00:26:00+05:30,11.931846,79.806596,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0038; not a police report.,reported
+Burglary,2026-08-27T10:33:00+05:30,11.912653,79.754884,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0039; not a police report.,reported
+Theft,2026-09-03T04:40:00+05:30,11.930414,79.814610,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0040; not a police report.,reported
+Assault,2026-09-04T06:47:00+05:30,11.935144,79.816555,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0041; not a police report.,under_investigation
+Assault,2026-09-13T18:54:00+05:30,11.936888,79.820952,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0042; not a police report.,under_investigation
+Vandalism,2026-10-04T21:01:00+05:30,11.892821,79.740401,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0043; not a police report.,reported
+Other,2026-09-29T06:08:00+05:30,11.935340,79.828249,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0044; not a police report.,closed
+Theft,2026-07-14T01:15:00+05:30,11.931431,79.817382,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0045; not a police report.,closed
+Vandalism,2026-08-11T10:22:00+05:30,11.860138,79.750610,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0046; not a police report.,under_investigation
+Burglary,2026-07-29T20:29:00+05:30,11.861988,79.782341,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0047; not a police report.,reported
+Other,2026-08-13T14:36:00+05:30,11.939274,79.789529,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0048; not a police report.,reported
+Assault,2026-09-09T00:43:00+05:30,11.930528,79.824866,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0049; not a police report.,reported
+Vandalism,2026-09-21T20:50:00+05:30,11.928742,79.815732,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0050; not a police report.,reported
+Robbery,2026-10-02T22:57:00+05:30,11.855013,79.810914,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0051; not a police report.,reported
+Theft,2026-07-06T16:04:00+05:30,11.934638,79.816900,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0052; not a police report.,under_investigation
+Cybercrime,2026-10-07T11:11:00+05:30,11.958548,79.814515,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0053; not a police report.,under_investigation
+Vehicle Theft,2026-07-09T16:18:00+05:30,11.921272,79.814942,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0054; not a police report.,under_investigation
+Theft,2026-07-26T07:25:00+05:30,11.948270,79.832128,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0055; not a police report.,under_investigation
+Other,2026-08-07T00:32:00+05:30,11.949534,79.797303,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0056; not a police report.,reported
+Theft,2026-08-15T07:39:00+05:30,11.938824,79.820413,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0057; not a police report.,under_investigation
+Other,2026-08-25T05:46:00+05:30,11.950590,79.836921,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0058; not a police report.,reported
+Other,2026-08-25T17:53:00+05:30,11.960542,79.834576,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0059; not a police report.,reported
+Vehicle Theft,2026-10-05T01:00:00+05:30,11.915488,79.806275,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0060; not a police report.,under_investigation
+Assault,2026-10-01T02:07:00+05:30,11.904291,79.808979,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0061; not a police report.,closed
+Robbery,2026-07-04T05:14:00+05:30,12.031344,79.863605,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0062; not a police report.,closed
+Robbery,2026-07-03T19:21:00+05:30,11.894122,79.808423,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0063; not a police report.,reported
+Other,2026-07-18T18:28:00+05:30,11.931054,79.806402,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0064; not a police report.,under_investigation
+Vandalism,2026-08-06T04:35:00+05:30,11.853891,79.811097,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0065; not a police report.,closed
+Assault,2026-08-19T08:42:00+05:30,11.936550,79.828940,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0066; not a police report.,under_investigation
+Robbery,2026-09-01T20:49:00+05:30,11.930419,79.818072,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0067; not a police report.,closed
+Burglary,2026-08-30T23:56:00+05:30,11.989871,79.832244,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0068; not a police report.,closed
+Vehicle Theft,2026-10-02T17:03:00+05:30,11.929406,79.824888,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0069; not a police report.,under_investigation
+Vehicle Theft,2026-09-19T19:10:00+05:30,11.929842,79.815753,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0070; not a police report.,reported
+Other,2026-10-05T01:17:00+05:30,11.934572,79.815477,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0071; not a police report.,closed
+Vandalism,2026-07-02T22:24:00+05:30,11.938538,79.822095,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0072; not a police report.,closed
+Vehicle Theft,2026-07-16T04:31:00+05:30,11.957218,79.822483,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0073; not a police report.,under_investigation
+Cybercrime,2026-07-24T22:38:00+05:30,11.936990,79.827171,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0074; not a police report.,under_investigation
+Other,2026-08-11T23:45:00+05:30,11.930859,79.818525,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0075; not a police report.,closed
+Vehicle Theft,2026-09-04T04:52:00+05:30,11.958702,79.814429,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0076; not a police report.,closed
+Vehicle Theft,2026-09-11T10:59:00+05:30,11.929846,79.823119,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0077; not a police report.,reported
+Vandalism,2026-09-24T01:06:00+05:30,11.948424,79.832042,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0078; not a police report.,under_investigation
+Robbery,2026-09-27T05:13:00+05:30,11.912631,79.754927,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0079; not a police report.,reported
+Assault,2026-07-11T22:20:00+05:30,11.922377,79.814792,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0080; not a police report.,closed
+Burglary,2026-07-03T23:27:00+05:30,11.915522,79.807408,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0081; not a police report.,closed
+Vehicle Theft,2026-08-07T18:34:00+05:30,11.904325,79.808395,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0082; not a police report.,closed
+Robbery,2026-07-25T03:41:00+05:30,11.894972,79.808440,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0083; not a police report.,reported
+Assault,2026-08-11T04:48:00+05:30,11.949798,79.836727,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0084; not a police report.,under_investigation
+Assault,2026-09-11T23:55:00+05:30,11.892909,79.738891,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0085; not a police report.,closed
+Burglary,2026-09-01T11:02:00+05:30,11.853925,79.812231,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0086; not a police report.,closed
+Other,2026-09-06T01:09:00+05:30,11.921816,79.815742,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0087; not a police report.,reported
+Other,2026-09-27T06:16:00+05:30,11.860226,79.749100,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0088; not a police report.,reported
+Burglary,2026-07-04T23:23:00+05:30,11.929776,79.816551,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0089; not a police report.,under_investigation
+Vandalism,2026-07-15T12:30:00+05:30,11.861020,79.782276,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0090; not a police report.,under_investigation
+Vandalism,2026-07-17T04:37:00+05:30,11.940528,79.789464,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0091; not a police report.,reported
+Assault,2026-07-29T14:44:00+05:30,11.934616,79.816943,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0092; not a police report.,reported
+Burglary,2026-08-24T15:51:00+05:30,11.960190,79.834835,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0093; not a police report.,reported
+Vehicle Theft,2026-08-19T15:58:00+05:30,11.915216,79.806475,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0094; not a police report.,closed
+Robbery,2026-09-24T14:05:00+05:30,11.950568,79.798123,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0095; not a police report.,reported
+Burglary,2026-09-27T08:12:00+05:30,11.937636,79.821232,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0096; not a police report.,closed
+Robbery,2026-07-03T02:19:00+05:30,12.032158,79.863088,Demo Zone A,SYNTHETIC DEMO: Fictional incident sample 0097; not a police report.,under_investigation
+Cybercrime,2026-07-07T10:26:00+05:30,11.930702,79.806661,Demo Zone D,SYNTHETIC DEMO: Fictional incident sample 0098; not a police report.,reported
+Burglary,2026-07-11T08:33:00+05:30,11.937254,79.827753,Demo Zone B,SYNTHETIC DEMO: Fictional incident sample 0099; not a police report.,under_investigation
+Theft,2026-08-08T05:40:00+05:30,11.905090,79.807895,Demo Zone C,SYNTHETIC DEMO: Fictional incident sample 0100; not a police report.,closed
