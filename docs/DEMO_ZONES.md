@@ -35,7 +35,10 @@ color-coded, clickable cards show explicit **FROM** and **TO** neighborhood
 landmarks, general travel direction and coordinate limits. Select a card,
 click its polygon, or use the right-hand quick selector to zoom to one zone;
 the highlighted polygon and right-hand detail view show the full approximate
-boundary. **Show all four zones** resets the selection.
+boundary. Selected zones additionally show two **START** and **END**
+reference-locality pins within the sector (for example, Muthialpet and
+Kalapet in Zone A). These are orientation points, **not measured border
+endpoints**. **Show all four zones** resets the selection.
 
 The described start/end neighborhoods are orientation aids, **not legally
 defined street boundary intersections**. The colored coordinate polygons
