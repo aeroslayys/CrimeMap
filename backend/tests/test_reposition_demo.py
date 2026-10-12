@@ -43,7 +43,7 @@ def test_reposition_dry_run_and_safe_apply(tmp_path, monkeypatch, capsys):
         assert (db.get(Incident, "DEMO-0002").latitude, db.get(Incident, "DEMO-0002").longitude) == (old_b[0] + .01, old_b[1])
         assert db.get(Incident, "CUSTOM-1").description == "imported row"
         assert len(db.scalars(select(Incident)).all()) == 3
-    assert "SKIP DEMO-0002" in capsys.readouterr().out
+    assert "\'skipped_custom\': 1" in capsys.readouterr().out
     engine.dispose()
 
 
