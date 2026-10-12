@@ -288,3 +288,9 @@
   .zone-coverage-heading h2{font-size:16px}
   .zone-coverage-card{padding:13px}
 }
+
+/* Labeled START / END reference neighborhoods inside the selected demo zone.
+   These labels orient a viewer; the polygon is the actual demo map boundary. */
+.demo-zone-endpoint-label{background:#14273beF;border:1px solid #bcdaf3;border-radius:6px;color:#f4f9ff;
+  font-weight:800;font-size:12px;padding:5px 9px;box-shadow:0 3px 13px #0009;white-space:nowrap}
+.demo-zone-endpoint-label::before{display:none}
