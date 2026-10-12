@@ -11,6 +11,8 @@ DEMO = {
 }
 
 PUDUCHERRY = {"south": 11.9, "west": 79.8, "north": 12.0, "east": 79.9}
+# Broad study viewport for dispersed synthetic fixtures; not a jurisdiction.
+DEMO_STUDY_BOUNDS = {"south": 11.84, "west": 79.72, "north": 12.05, "east": 79.88}
 
 
 def test_map_returns_geojson_coordinates_in_lon_lat_order(client):
@@ -73,7 +75,11 @@ def test_sample_dataset_renders_all_100_synthetic_map_points(client):
     response = client.post('/api/incidents/import', files={'file': ('demo.json', json.dumps(cleaned), 'application/json')})
     assert response.status_code == 201, response.text
     assert response.json()['imported'] == 100
-    visible = client.get('/api/map/incidents', params=PUDUCHERRY)
+    # A local map viewport must not be expected to cover the broader fixtures.
+    local = client.get('/api/map/incidents', params=PUDUCHERRY)
+    assert local.status_code == 200, local.text
+    assert 0 < local.json()['meta']['total'] < 100
+    visible = client.get('/api/map/incidents', params=DEMO_STUDY_BOUNDS)
     assert visible.status_code == 200, visible.text
     assert visible.json()['meta']['total'] == 100
     assert len(visible.json()['features']) == 100
