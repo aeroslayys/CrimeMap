@@ -1,4 +1,4 @@
-"""Preview or explicitly update unchanged legacy synthetic fixture coordinates only.
+"""Preview or explicitly redistribute original synthetic fixture coordinates only.
 
 This NEVER creates, deletes or reseeds records. It NEVER changes accounts, status,
 notes, category, source, or imported/user-created incident records.
@@ -12,6 +12,7 @@ from app.db import SessionLocal
 from app.models import Incident
 
 CSV = Path(__file__).resolve().parents[2] / "data" / "synthetic_incidents.csv"
+PREVIOUS = Path(__file__).resolve().parents[2] / "data" / "previous_demo_coordinates.csv"
 
 # Snapshot of the original bundled DEMO coordinates, before the inland correction.
 # These exact coordinate pairs are used as an optimistic-lock safeguard: if an
@@ -120,29 +121,37 @@ LEGACY_COORDINATES = {
 }
 
 
+def same_point(actual, expected):
+    return all(abs(a - b) <= 0.0000005 for a, b in zip(actual, expected))
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--apply", action="store_true", help="Update only matching unchanged legacy demo coordinates")
+    parser.add_argument("--apply", action="store_true",
+                        help="Commit moves of untouched canonical demo pins (default: preview)")
     args = parser.parse_args(argv)
-    proposed = 0
-    skipped = 0
-    unchanged = 0
+    # A historical snapshot is necessary: deploying CSV changes alone does not
+    # update rows already seeded in PostgreSQL or SQLite.
+    with PREVIOUS.open(encoding="utf-8", newline="") as source:
+        old_fixture = {
+            row["id"]: (float(row["old_latitude"]), float(row["old_longitude"]))
+            for row in csv.DictReader(source)
+        }
+    proposed = skipped = unchanged = 0
     with SessionLocal() as db, CSV.open(encoding="utf-8", newline="") as source:
         for row in csv.DictReader(source):
             identifier = row["id"]
-            original = LEGACY_COORDINATES.get(identifier)
-            if original is None:
-                raise RuntimeError(f"Unknown canonical ID: {identifier}")
+            target = (float(row["latitude"]), float(row["longitude"]))
             record = db.get(Incident, identifier)
             if record is None or record.source_type != "synthetic":
                 skipped += 1
                 continue
-            target = (float(row["latitude"]), float(row["longitude"]))
             current = (float(record.latitude), float(record.longitude))
-            if current == target:
+            if same_point(current, target):
                 unchanged += 1
                 continue
-            if any(abs(a - b) > 0.0000005 for a, b in zip(current, original)):
+            recognized_positions = [old_fixture.get(identifier), LEGACY_COORDINATES.get(identifier)]
+            if not any(pos is not None and same_point(current, pos) for pos in recognized_positions):
                 print(f"SKIP {identifier}: coordinates were manually changed ({current})")
                 skipped += 1
                 continue
@@ -154,10 +163,10 @@ def main(argv=None):
             db.commit()
         else:
             db.rollback()
-    print(f"{'Updated' if args.apply else 'Would update'} {proposed} legacy fixtures; "
-          f"{unchanged} already corrected; {skipped} missing, non-demo or custom-positioned.")
+    print(f"{'Updated' if args.apply else 'Would update'} {proposed} untouched canonical fixtures; "
+          f"{unchanged} already redistributed; {skipped} missing, non-demo, or custom positioned.")
     if not args.apply:
-        print("No database records were changed. Use --apply only after reviewing the preview.")
+        print("Dry run only. No database rows changed. Use --apply after reviewing the preview.")
 
 
 if __name__ == "__main__":
