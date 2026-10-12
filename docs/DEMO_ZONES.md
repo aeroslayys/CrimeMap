@@ -24,13 +24,24 @@ the police**. They are neither cadastral polygons nor a verified land/water mask
 
 ## How to view zones
 
-After logging in, go to **Geospatial Intelligence → Zones**.
-Distinct outlines are shown on the existing OpenStreetMap canvas. Click a
-polygon or **View this zone** to zoom into it and show only incident points
-**inside that polygon**. Choose **Show all zones** to view all four again.
-Each card gives a “from → to” neighborhood description and approximate
-latitude/longitude extent. The regular marker, heatmap, grid and simulated
-operations modes remain available.
+After logging in, go to **Geospatial Intelligence**. The default
+**Markers** view displays the colored A–D sector outlines on top of fictional
+incident markers. Choose **Zone boundaries: Off/On** to hide or show these
+outlines without changing incident data.
+
+Choose **Zones** to fit all four sector boundaries onto the map. The new
+**Where each zone starts and ends** board sits directly above the map. Its
+color-coded, clickable cards show explicit **FROM** and **TO** neighborhood
+landmarks, general travel direction and coordinate limits. Select a card,
+click its polygon, or use the right-hand quick selector to zoom to one zone;
+the highlighted polygon and right-hand detail view show the full approximate
+boundary. **Show all four zones** resets the selection.
+
+The described start/end neighborhoods are orientation aids, **not legally
+defined street boundary intersections**. The colored coordinate polygons
+are the precise geometry used *within this fictional demo*, not verified
+police-station polygons or published administrative boundaries. The regular
+heatmap, grid and simulated operations modes remain available.
 
 New incident pins suggest a zone using the same geometry. Editable
 `police_station` values remain editable labels; geographic selection in
