@@ -5,6 +5,7 @@ from pathlib import Path
 from sqlalchemy import create_engine, func, select
 from sqlalchemy.orm import Session, sessionmaker
 
+from app.demo_land import in_demo_land, ZONE_SITES
 from app.db import Base
 from app.models import Incident
 from app.schemas import IncidentCreate
@@ -30,17 +31,17 @@ def test_bundled_samples_are_exactly_100_and_consistent():
     for private, uploaded in zip(master, public):
         assert {key: value for key, value in private.items() if key != "id"} == uploaded
         assert IncidentCreate.model_validate(uploaded)
-        assert 11.9 <= float(uploaded["latitude"]) <= 12.0
-        # Conservative inland-only fixture envelopes (not a coastline GIS model).
-        inland = {
-            "Demo Zone A": (11.9320, 11.9334, 79.8103, 79.8117),
-            "Demo Zone B": (11.9566, 11.9580, 79.8220, 79.8234),
-            "Demo Zone C": (11.9214, 11.9228, 79.8153, 79.8167),
-            "Demo Zone D": (11.9301, 11.9315, 79.8055, 79.8069),
-        }
-        lo_lat, hi_lat, lo_lon, hi_lon = inland[uploaded["police_station"]]
-        assert lo_lat <= float(uploaded["latitude"]) <= hi_lat
-        assert lo_lon <= float(uploaded["longitude"]) <= hi_lon
+        assert in_demo_land(float(uploaded["latitude"]), float(uploaded["longitude"]))
+        assert uploaded["police_station"] in ZONE_SITES
+
+    # One hundred fictional reports should cover several different Puducherry
+    # neighborhoods, not four street-sized clusters.
+    latitudes = [float(row["latitude"]) for row in master]
+    longitudes = [float(row["longitude"]) for row in master]
+    assert max(latitudes) - min(latitudes) > 0.15
+    assert max(longitudes) - min(longitudes) > 0.10
+    assert len({(round(lat, 2), round(lon, 2)) for lat, lon in zip(latitudes, longitudes)}) >= 15
+
 
 
 def test_reseed_adds_only_missing_64_and_preserves_edits(tmp_path, monkeypatch):
