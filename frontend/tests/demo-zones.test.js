@@ -40,6 +40,11 @@ test('each boundary has an explicit geographic from/to description and accurate 
     assert.ok(zone.from && zone.to && zone.from !== zone.to);
     assert.ok(zone.direction);
     assert.ok(zone.coverage.includes('→'));
+    for (const reference of [zone.startReference, zone.endReference]) {
+      assert.ok(reference.label);
+      assert.ok(isWithinZone(reference.latitude, reference.longitude, zone),
+        `${zone.id} has an indicative reference point outside its own polygon`);
+    }
     assert.ok(!names.has(zone.short));
     names.add(zone.short);
     assert.deepEqual(zone.ring[0], zone.ring.at(-1), 'Polygon must be a closed ring');
