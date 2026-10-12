@@ -23,8 +23,8 @@ def test_operational_points_are_fictional_and_well_formed(client):
             all_ids.append(asset["id"])
             assert asset["id"].startswith("DEMO-")
             assert asset["source_type"] == "synthetic"
-            assert 11.7 <= asset["latitude"] <= 12.2
-            assert 79.6 <= asset["longitude"] <= 80.0
+            assert 11.915 <= asset["latitude"] <= 11.955
+            assert 79.80 <= asset["longitude"] <= 79.832
     for patrol in data["patrols"]:
         all_ids.append(patrol["id"])
         assert patrol["id"].startswith("DEMO-")
@@ -32,8 +32,8 @@ def test_operational_points_are_fictional_and_well_formed(client):
         assert len(patrol["track"]) == data["timeline"]["steps"]
         timestamps = []
         for point in patrol["track"]:
-            assert 11.7 <= point["latitude"] <= 12.2
-            assert 79.6 <= point["longitude"] <= 80.0
+            assert 11.915 <= point["latitude"] <= 11.955
+            assert 79.80 <= point["longitude"] <= 79.832
             timestamp = datetime.fromisoformat(point["timestamp"])
             assert timestamp.utcoffset().total_seconds() == 19800
             timestamps.append(timestamp)
