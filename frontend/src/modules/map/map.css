@@ -212,3 +212,26 @@
 @media(max-width:950px) and (min-width:551px){
   .map-layer-switch{grid-template-columns:repeat(5,minmax(0,1fr))}
 }
+
+
+/* Dense-city default with optional full-demonstration-area extent. */
+.map-toolbar .button.map-city-view{margin-left:auto}
+.map-toolbar .button.map-extent-view,.map-toolbar .button.map-city-view~.button{margin-left:0}
+@media(max-width:900px){.map-toolbar .button.map-city-view{margin-left:0}}
+
+/* Administrator-only, opt-in canonical demo coordinate migration. */
+.demo-redistribution{padding:13px 17px;margin-bottom:15px;background:#132338;border:1px solid #355475}
+.demo-redistribution summary{display:flex;align-items:center;gap:9px;cursor:pointer;font-size:14px;font-weight:700;color:#e6f2ff}
+.demo-redistribution summary svg{color:#a3d1ff}
+.demo-redistribution p{color:#c3d5ea;line-height:1.55;font-size:13px;margin:11px 0}
+.demo-redistribution>button{margin:7px 0 10px}
+.demo-redistribution small{display:block;color:#afc2d9;font-size:12px;line-height:1.5;margin-top:10px}
+.demo-redistribution-counts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:9px;margin:10px 0}
+.demo-redistribution-counts>span{padding:10px;background:#1a344e;border:1px solid #34526c;border-radius:7px;color:#c5d9ed;font-size:12px}
+.demo-redistribution-counts strong{font-size:17px;color:#f0f6ff;margin-right:5px}
+.demo-redistribution-confirm{padding:12px;border-radius:8px;border:1px solid #7a694d;background:#312c28;display:grid;gap:12px}
+.demo-redistribution-confirm label{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#f0ddbd;line-height:1.5}
+.demo-redistribution-confirm input{flex-shrink:0;width:18px;height:18px;accent-color:#80baff}
+.demo-redistribution-confirm .button{justify-self:start}
+.demo-redistribution .demo-redistribution-ok{display:flex;gap:8px;align-items:center;color:#99dec3}
+.demo-redistribution .demo-redistribution-error{display:flex;gap:8px;align-items:center;color:#ffb1b1}
