@@ -68,11 +68,21 @@ The deployed app opens to a **public, informational landing page** describing wh
 
 The landing page includes a **proposed future idea**, not an implemented feature: privacy-protected citizen complaint progress with verified case references, identity checks, authorized updates and simple status milestones. **There is no real complaint intake, public case lookup, verified citizen identity system, or live police integration in this hackathon demo.** Never submit real personal/case data.
 
-## Inland fictional data fixtures
+## Distributed fictional incidents and visible demonstration zones
 
-The 100 canonical fictional incidents in `data/synthetic_incidents.csv` and the downloadable sample CSV were repositioned into **conservative inland demonstration clusters** near Puducherry. Synthetic CCTV, accident and patrol overlays were adjusted too. These are illustrative land-based demo points, **not surveyed police reports, verified jurisdiction boundaries or a full GIS coastline mask**. Users can still create/import records in arbitrary locations; the app does not globally geofence new incidents.
+The 100 canonical synthetic incidents in `data/synthetic_incidents.csv` and
+the downloadable sample now cover widely separated Puducherry reference
+neighborhoods. The **Zones** mode in Geospatial Intelligence shows four
+clickable colored polygons with descriptions of where each zone begins and
+ends. Their boundaries are illustrative, **not official police jurisdictions**
+or authoritative water/land outlines.
 
-**Previously seeded cloud or local records will NOT change merely because the repo or Cloud Run image was updated.** `scripts.seed_demo` is deliberately insert-only and preserves existing records. To review a strictly opt-in location-only correction of unmodified original `DEMO-` rows, see [the cloud deployment handoff](docs/CLOUD_DEPLOYMENT.md#correct-existing-canonical-fixture-coordinates-optional). **Do not reset your existing databases or accounts** to refresh the fixture positions.
+**Existing databases are unchanged on code deployment.** Seeding only
+inserts missing records. Use `cd backend && python -m scripts.reposition_demo`
+to preview relocating untouched original/small-block canonical DEMO pins;
+`--apply` is required for any database updates. Never reset a database or
+rerun a cloud initializer to relocate sample locations. Read the detailed
+[zone map and migration guide](docs/DEMO_ZONES.md).
 
 ## What it does
 
@@ -80,8 +90,8 @@ CrimeMap has **four workspaces**, not a separate screen for every visualization:
 
 | Workspace | Capabilities |
 | --- | --- |
-| **Incidents** | Search, filter, paginate, create and update synthetic records. Place/drag a map marker to choose coordinates and suggest a nearby **fictional** Demo Zone A–D. **Map** on a record locates and highlights it on the existing map. CSV/JSON import previews validation problems, possible duplicates and warnings before confirmation. |
-| **Geospatial Intelligence** | One Leaflet/OpenStreetMap map with **Markers, Heatmap, Grid Analysis and Operations** modes. Fixed-grid count comparisons use equal-length, nonoverlapping periods; Operations overlays are fictional, not live GPS/CCTV feeds. |
+| **Incidents** | Search, filter, paginate, create and update synthetic records. Place/drag a map marker to choose coordinates and suggest the containing **fictional** Demo Zone A–D. **Map** on a record locates and highlights it on the existing map. CSV/JSON import previews validation problems, possible duplicates and warnings before confirmation. |
+| **Geospatial Intelligence** | One Leaflet/OpenStreetMap map with **Markers, Zones, Heatmap, Grid Analysis and Operations** modes. Fixed-grid count comparisons use equal-length, nonoverlapping periods; Operations overlays are fictional, not live GPS/CCTV feeds. |
 | **Analytics** | Counts by category, status, IST date/hour and demonstration zone. Shared filters cover all matching records, not just the visible registry page. **Build presentation PDF** exports selectable analytics, geographic findings and saved prevention-plan summaries. |
 | **Prevention Planner** | General safeguarding suggestions from descriptive fictional counts; human-reviewed action plans with status, owner and due date. Completed plans offer a **before/later count review**, not a causal effectiveness claim. |
 
@@ -102,12 +112,12 @@ Required CSV fields (timezone-aware `occurred_at`):
 
 ```csv
 category,occurred_at,latitude,longitude,police_station,description,status
-Theft,2026-10-02T12:30:00+05:30,11.9332,79.8299,Demo Zone A,SYNTHETIC TEST RECORD,reported
+Theft,2026-10-02T12:30:00+05:30,11.9332,79.8299,Demo Zone B,SYNTHETIC TEST RECORD,reported
 ```
 
 JSON can contain an array of incident objects, or an object with an `incidents` array. Valid statuses: `reported`, `under_investigation`, `closed`. Allowed categories are defined in `backend/app/schemas.py`.
 
-**Important:** Zone selection is based on approximate fictional reference points, not authorized police-jurisdiction polygons. A displayed grid count or changed incident total does **not** imply a verified hotspot, public safety risk or successful intervention.
+**Important:** Zones mode and pin suggestions use fictional display polygons (not authorized police jurisdictions). Other analytics/grid zone filters use stored, editable labels. A displayed grid count or changed incident total does **not** imply a verified hotspot, public safety risk or successful intervention.
 
 ## Project layout
 
