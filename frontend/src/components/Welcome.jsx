@@ -69,10 +69,10 @@ export default function Welcome({ onSignIn, onOpenWorkspace, theme, onToggleThem
 
         <section className="welcome-roadmap" id="welcome-roadmap" aria-labelledby="welcome-roadmap-title">
           <div className="welcome-roadmap-heading"><span className="welcome-kicker">FUTURE DIRECTION · NOT YET IMPLEMENTED</span><h2 id="welcome-roadmap-title">What if residents could follow a complaint's progress?</h2>
-            <p>Today, CrimeMap manages <strong>synthetic incident statuses and internal prevention plans</strong>. A possible future citizen-facing module could help someone who filed a complaint see the next verified step without repeatedly contacting a station. <strong>There is no public complaint portal or real-case lookup in this demo.</strong></p>
+            <p>Today, CrimeMap manages <strong>synthetic incident statuses and internal prevention plans</strong>. A future citizen-facing module could let someone who filed a complaint privately track its status, the steps recorded toward resolution and when a new update is available, instead of repeatedly contacting a station. <strong>There is no public complaint portal or real-case lookup in this demo.</strong></p>
             <ul className="welcome-roadmap-list">
               <li>Private case reference and identity verification before displaying any details.</li>
-              <li>Updates such as <b>received → assigned → under review → resolved</b>, with timestamps and authorized notes.</li>
+              <li>A verified timeline of <b>received → assigned → under review → resolved</b>, showing when the station acknowledged the complaint and what follow-up steps were authorized for public display.</li>
               <li>Clear distinction between a staff update and a citizen-visible notification, with privacy and accessibility safeguards.</li>
             </ul>
           </div>
