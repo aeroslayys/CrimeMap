@@ -31,7 +31,7 @@ test('pin placement suggests the nearest of four fictional demonstration zones',
     assert.equal(suggestDemoZone(ref.latitude, ref.longitude), ref.name);
   }
   assert.equal(suggestDemoZone(11.935, 79.83), 'Demo Zone A');
-  assert.equal(suggestDemoZone(11.944, 79.842), 'Demo Zone D');
+  assert.equal(suggestDemoZone(11.9442, 79.8231), 'Demo Zone D');
 });
 
 test('no zone is guessed for missing, invalid, or distant coordinates', () => {
@@ -48,7 +48,7 @@ test('every new pin position replaces the previous demo zone and preserves other
     category: 'Theft', status: 'reported', description: 'Synthetic example',
     latitude: null, longitude: null, police_station: '',
   };
-  const zoneA = locationFieldsForPin(previous, 11.9332, 79.8299);
+  const zoneA = locationFieldsForPin(previous, 11.9332, 79.8294);
   assert.equal(zoneA.police_station, 'Demo Zone A');
   const edited = { ...zoneA, police_station: 'My manual demonstration zone' };
   const zoneB = locationFieldsForPin(edited, 11.9509, 79.8196);
@@ -73,4 +73,11 @@ test('moving outside demo coverage clears the zone; clearing pin removes stale v
   assert.equal(cleared.latitude, null);
   assert.equal(cleared.longitude, null);
   assert.equal(cleared.police_station, '');
+});
+
+test('fictional zone reference points stay inside the conservative inland demo extent', () => {
+  for (const zone of DEMO_ZONE_REFERENCES) {
+    assert.ok(zone.latitude > 11.91 && zone.latitude < 11.96);
+    assert.ok(zone.longitude >= 79.802 && zone.longitude < 79.831);
+  }
 });
