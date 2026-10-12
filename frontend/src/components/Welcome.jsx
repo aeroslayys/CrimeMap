@@ -1,4 +1,5 @@
 import { ArrowRight, BarChart3, CheckCircle2, ClipboardCheck, Eye, FileDown, LockKeyhole, MapPinned, ShieldCheck, Sparkles } from 'lucide-react';
+import ThemeToggle from './ThemeToggle.jsx';
 import './Welcome.css';
 
 const CAPABILITIES = [
@@ -10,7 +11,7 @@ const CAPABILITIES = [
     description: 'Create human-reviewed prevention plans, record progress, and compare observed incident counts. A completed plan is not proof of effectiveness.' },
 ];
 
-export default function Welcome({ onSignIn, onOpenWorkspace, embedded = false }) {
+export default function Welcome({ onSignIn, onOpenWorkspace, theme, onToggleTheme, embedded = false }) {
   const enter = embedded ? onOpenWorkspace : onSignIn;
   return (
     <div className={`welcome-page ${embedded ? 'welcome-embedded' : ''}`}>
@@ -22,6 +23,7 @@ export default function Welcome({ onSignIn, onOpenWorkspace, embedded = false })
         <nav className="welcome-toplinks" aria-label="Landing navigation">
           <a href="#welcome-benefits">Why CrimeMap</a>
           <a href="#welcome-roadmap">What's next</a>
+          <ThemeToggle theme={theme} onToggle={onToggleTheme} className="welcome-theme-toggle" />
           <button type="button" className="welcome-signin" onClick={enter}><LockKeyhole size={16}/> Sign in</button>
         </nav>
       </header>}
