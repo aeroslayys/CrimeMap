@@ -14,6 +14,7 @@ import {
 } from './GridComparison.jsx';
 import { focusedIncidentFeature } from './incident-focus.js';
 import { DEMO_ZONES, isWithinZone, zoneBounds } from './demo-zones.js';
+import DemoRedistributionPanel from './DemoRedistributionPanel.jsx';
 import './map.css';
 
 const DEFAULT_GRID = { start_date: '', end_date: '', zone: '', cell_size_m: '1000', min_count: '3' };
@@ -60,7 +61,9 @@ function comparisonPopup(properties) {
   return root;
 }
 
-const CENTER = [11.94, 79.81];
+// Default to the populated Puducherry urban core, not the surrounding districts.
+const CENTER = [11.937, 79.820];
+const CITY_ZOOM = 13;
 const CATEGORY_KEYS = {
   Theft: 'theft', 'Vehicle Theft': 'vehicle', Burglary: 'burglary', Robbery: 'robbery',
   Assault: 'assault', Cybercrime: 'cybercrime', Vandalism: 'vandalism', Other: 'other',
@@ -109,7 +112,7 @@ function buildPopup(feature) {
   return root;
 }
 
-export default function CrimeMap({ refresh = 0, canAnalyze = false, focusIncident = null, onClearFocus }) {
+export default function CrimeMap({ refresh = 0, canAnalyze = false, canManage = false, focusIncident = null, onClearFocus, onDemoUpdated }) {
   const mapContainer = useRef(null);
   const mapRef = useRef(null);
   const markerRefs = useRef(new Map());
@@ -163,7 +166,7 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, focusInciden
   useEffect(() => {
     if (!mapContainer.current) return;
     const map = L.map(mapContainer.current, {
-      center: CENTER, zoom: 11, zoomControl: false, preferCanvas: true,
+      center: CENTER, zoom: CITY_ZOOM, zoomControl: false, preferCanvas: true,
     });
     mapRef.current = map;
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -374,7 +377,9 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, focusInciden
       overlay = L.heatLayer(points, { radius: 26, blur: 20, maxZoom: 16, minOpacity: 0.28 });
     } else {
       overlay = L.markerClusterGroup({
-        showCoverageOnHover: false, maxClusterRadius: 50, spiderfyOnMaxZoom: true,
+        showCoverageOnHover: false, maxClusterRadius: 35, spiderfyOnMaxZoom: true,
+        // At normal city zoom expose actual distinct pins rather than 4 oversized bubbles.
+        disableClusteringAtZoom: CITY_ZOOM,
         iconCreateFunction(cluster) {
           const count = cluster.getChildCount();
           return L.divIcon({
@@ -491,6 +496,11 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, focusInciden
     else requestAnimationFrame(() => requestAnimationFrame(tryOpen));
   }
 
+  function zoomToCity() {
+    onClearFocus?.();
+    mapRef.current?.setView(CENTER, CITY_ZOOM, { animate: false });
+  }
+
   function fitZones() {
     const map = mapRef.current;
     if (!map) return;
@@ -521,7 +531,7 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, focusInciden
     if (operations) setOpsStep(Math.max(0, operations.timeline.steps - 1));
     setSelectedOperationIncident(null);
     onClearFocus?.();
-    mapRef.current?.setView(CENTER, 11);
+    mapRef.current?.setView(CENTER, CITY_ZOOM, { animate: false });
   }
 
   function applyGrid(event) {
@@ -603,6 +613,7 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, focusInciden
         </div>
       </div>
       <div className="demo-warning"><ShieldAlert size={19} /><div><strong>Demonstration map — synthetic incidents only</strong><span>All locations and reports shown here are fictional. Heatmaps and grids describe fictional concentrations. Operational overlays use simulated assets and history, not actual GPS or CCTV feeds.</span></div></div>
+      {canManage && <DemoRedistributionPanel onUpdated={() => { onDemoUpdated?.(); zoomToCity(); }} />}
       {focusIncident && <div className="map-focus-banner" role="status">
         <MapPinned size={20} />
         <div><strong>Located incident: {focusIncident.category} · {focusIncident.id.startsWith('DEMO-') ? focusIncident.id : focusIncident.id.slice(0, 8)}</strong>
@@ -620,6 +631,8 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, focusInciden
           <option value="">All statuses</option>
           {STATUSES.map(([value, label]) => <option value={value} key={value}>{label}</option>)}
         </select>
+        <button type="button" className="button subtle map-city-view" onClick={zoomToCity}><Crosshair size={15} /> Pondy city</button>
+        <button type="button" className="button subtle map-extent-view" onClick={() => { onClearFocus?.(); setActiveZone(''); fitZones(); }}><MapPinned size={15} /> All demo areas</button>
         <button type="button" className="button subtle" onClick={resetMap}><RotateCcw size={15} /> Reset map</button>
       </section>
 
