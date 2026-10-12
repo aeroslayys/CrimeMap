@@ -31,18 +31,30 @@ ACCIDENTS = [
     {"id": "DEMO-ACC-04", "label": "Synthetic road incident", "severity": "moderate", "occurred_at": "2026-09-18T11:00:00+05:30"},
 ]
 
-# Each historical illustrative track stays within one convex inland block.
-# Segments are fictional, not road routes or GPS observations.
+# These are fictional reference-area points, NOT device locations or GPS feeds.
+# Individual patrol routes must remain near ONE neighborhood anchor: repeated
+# demo_position calls with different IDs would jump across distant neighborhoods.
 for camera in CAMERAS:
     camera["latitude"], camera["longitude"] = demo_position(camera["id"], camera["zone"])
 for index, accident in enumerate(ACCIDENTS):
     accident["latitude"], accident["longitude"] = demo_position(accident["id"], f"Demo Zone {chr(65 + index)}")
 
+def local_demo_track(index, zone):
+    """Seven close-by fictional positions; never interpolate across neighborhoods."""
+    lat, lon = demo_position(f"patrol-{index}", zone)
+    return [
+        (round(lat + (step - 3) * 0.00005, 6),
+         round(lon + (step - 3) * 0.00005, 6))
+        for step in range(STEPS)
+    ]
+
+
 PATROL_PATHS = [
-    (f"DEMO-UNIT-{index:02d}", f"Demo patrol {label}", "demo_route", [
-        demo_position(f"patrol-{index}-{step}", zone) for step in range(STEPS)
-    ])
-    for index, label, zone in [(1, "Alpha", "Demo Zone A"), (2, "Bravo", "Demo Zone B"), (3, "Charlie", "Demo Zone C")]
+    (f"DEMO-UNIT-{index:02d}", f"Demo patrol {label}", "demo_route",
+     local_demo_track(index, zone))
+    for index, label, zone in [(1, "Alpha", "Demo Zone A"),
+                               (2, "Bravo", "Demo Zone B"),
+                               (3, "Charlie", "Demo Zone C")]
 ]
 
 
