@@ -1,7 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  DEMO_ZONE_REFERENCES, DEMO_ZONE_MAX_DISTANCE_METERS,
   validIncidentPosition, suggestDemoZone, locationFieldsForPin,
 } from '../src/modules/incidents/location-utils.js';
 
@@ -24,13 +23,12 @@ test('missing, coerced or out-of-range coordinates cannot be saved', () => {
 });
 
 
-test('pin placement suggests the nearest of four fictional demonstration zones', () => {
-  assert.equal(DEMO_ZONE_REFERENCES.length, 4);
-  assert.equal(DEMO_ZONE_MAX_DISTANCE_METERS, 3500);
-  for (const ref of DEMO_ZONE_REFERENCES) {
-    assert.equal(suggestDemoZone(ref.latitude, ref.longitude), ref.name);
-  }
-  assert.equal(suggestDemoZone(11.935, 79.83), 'Demo Zone A');
+test('pin location maps to the same illustrative polygon used by geospatial intelligence', () => {
+  assert.equal(suggestDemoZone(12.031256, 79.863972), 'Demo Zone A'); // Kalapet
+  assert.equal(suggestDemoZone(11.936242, 79.827969), 'Demo Zone B'); // town centre
+  assert.equal(suggestDemoZone(11.894870, 79.807590), 'Demo Zone C'); // Ariyankuppam
+  assert.equal(suggestDemoZone(11.912719, 79.755164), 'Demo Zone D'); // Villianur
+  assert.equal(suggestDemoZone(11.935, 79.830), 'Demo Zone B');
   assert.equal(suggestDemoZone(11.9308, 79.8062), 'Demo Zone D');
 });
 
@@ -48,10 +46,10 @@ test('every new pin position replaces the previous demo zone and preserves other
     category: 'Theft', status: 'reported', description: 'Synthetic example',
     latitude: null, longitude: null, police_station: '',
   };
-  const zoneA = locationFieldsForPin(previous, 11.9327, 79.8110);
+  const zoneA = locationFieldsForPin(previous, 11.9573, 79.8227);
   assert.equal(zoneA.police_station, 'Demo Zone A');
   const edited = { ...zoneA, police_station: 'My manual demonstration zone' };
-  const zoneB = locationFieldsForPin(edited, 11.9573, 79.8227);
+  const zoneB = locationFieldsForPin(edited, 11.9362, 79.8280);
   assert.equal(zoneB.police_station, 'Demo Zone B');
   assert.equal(zoneB.category, 'Theft');
   assert.equal(zoneB.description, previous.description);
@@ -62,7 +60,7 @@ test('every new pin position replaces the previous demo zone and preserves other
 });
 
 test('moving outside demo coverage clears the zone; clearing pin removes stale values', () => {
-  const selected = locationFieldsForPin({ category: 'Other', police_station: 'old' }, 11.9221, 79.8160);
+  const selected = locationFieldsForPin({ category: 'Other', police_station: 'old' }, 11.9051, 79.8086);
   assert.equal(selected.police_station, 'Demo Zone C');
   const distant = locationFieldsForPin(selected, 12.15, 79.83);
   assert.equal(distant.police_station, '');
@@ -75,9 +73,3 @@ test('moving outside demo coverage clears the zone; clearing pin removes stale v
   assert.equal(cleared.police_station, '');
 });
 
-test('fictional zone reference points stay inside the conservative inland demo extent', () => {
-  for (const zone of DEMO_ZONE_REFERENCES) {
-    assert.ok(zone.latitude > 11.91 && zone.latitude < 11.96);
-    assert.ok(zone.longitude >= 79.802 && zone.longitude < 79.831);
-  }
-});
