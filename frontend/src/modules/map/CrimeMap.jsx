@@ -125,6 +125,9 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, canManage = 
   const [status, setStatus] = useState('');
   const [layer, setLayer] = useState('markers');
   const [activeZone, setActiveZone] = useState('');
+  // Geographic boundary outlines should be visible alongside incidents, not
+  // hidden in a separate mode that users may never discover.
+  const [showMarkerZones, setShowMarkerZones] = useState(true);
   const [collection, setCollection] = useState(EMPTY);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -155,13 +158,13 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, canManage = 
   const [opsLayers, setOpsLayers] = useState(DEFAULT_OPERATION_LAYERS);
   const [opsStep, setOpsStep] = useState(0);
   const [selectedOperationIncident, setSelectedOperationIncident] = useState(null);
+  const selectedZone = DEMO_ZONES.find(zone => zone.id === activeZone) || null;
   const zoneFeatures = useMemo(() => {
-    const selected = DEMO_ZONES.find(zone => zone.id === activeZone);
-    return selected ? collection.features.filter(feature => {
+    return selectedZone ? collection.features.filter(feature => {
       const [longitude, latitude] = feature.geometry.coordinates;
-      return isWithinZone(latitude, longitude, selected);
+      return isWithinZone(latitude, longitude, selectedZone);
     }) : collection.features;
-  }, [collection, activeZone]);
+  }, [collection, selectedZone]);
 
   useEffect(() => {
     if (!mapContainer.current) return;
@@ -412,37 +415,51 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, canManage = 
     };
   }, [collection, layer, activeGridData, gridView, operations, opsLayers, opsStep, zoneFeatures]);
 
-  // Separate, clickable demonstration sector outlines on the SAME Leaflet map.
+  // Show readable geographic sector outlines with the normal incident pins as
+  // well as in Zones mode. In Markers mode, polygons cannot consume pin clicks.
   useEffect(() => {
-    if (layer !== 'zones' || !mapRef.current) return;
+    const zonesMode = layer === 'zones';
+    if (!(zonesMode || (layer === 'markers' && showMarkerZones)) || !mapRef.current) return;
     const map = mapRef.current;
     const group = L.layerGroup();
     for (const zone of DEMO_ZONES) {
-      const selected = activeZone === zone.id;
+      const selected = zonesMode && activeZone === zone.id;
       const polygon = L.polygon(zoneBounds(zone), {
-        color: zone.color, weight: selected ? 4 : 2.5,
-        dashArray: selected ? undefined : '7 5',
-        fillColor: zone.color, fillOpacity: selected ? 0.16 : 0.06,
+        color: zone.color, weight: selected ? 4.5 : 3,
+        dashArray: selected ? undefined : '8 5',
+        opacity: 0.95,
+        fillColor: zone.color, fillOpacity: selected ? 0.23 : zonesMode ? 0.13 : 0.075,
+        interactive: zonesMode,
       });
-      polygon.bindTooltip(zone.short, {
+      // Labels are map-native and remain readable without clicking.
+      polygon.bindTooltip(zonesMode ? zone.short + ' · ' + zone.area : zone.short, {
         permanent: true, direction: 'center', className: 'demo-zone-map-label',
+        interactive: false,
       });
-      const popup = document.createElement('div');
-      popup.className = 'crime-popup';
-      const heading = document.createElement('strong');
-      heading.textContent = zone.short + ' · ' + zone.area;
-      const fromTo = document.createElement('p');
-      fromTo.textContent = zone.coverage;
-      const notice = document.createElement('small');
-      notice.textContent = 'Illustrative boundary · Not a police jurisdiction';
-      popup.append(heading, fromTo, notice);
-      polygon.bindPopup(popup);
-      polygon.on('click', () => selectDemoZone(zone));
+      if (zonesMode) {
+        const popup = document.createElement('div');
+        popup.className = 'crime-popup';
+        const heading = document.createElement('strong');
+        heading.textContent = zone.short + ' · ' + zone.area;
+        const from = document.createElement('div');
+        from.textContent = 'From: ' + zone.from;
+        const to = document.createElement('div');
+        to.textContent = 'To: ' + zone.to;
+        const direction = document.createElement('div');
+        direction.textContent = 'Direction: ' + zone.direction;
+        const extent = document.createElement('div');
+        extent.textContent = 'Approximate limits: ' + zone.extent;
+        const notice = document.createElement('small');
+        notice.textContent = 'Illustrative zone outline only — not a legal or police boundary';
+        popup.append(heading, from, to, direction, extent, notice);
+        polygon.bindPopup(popup);
+        polygon.on('click', () => selectDemoZone(zone));
+      }
       polygon.addTo(group);
     }
     group.addTo(map);
     return () => map.removeLayer(group);
-  }, [layer, activeZone]);
+  }, [layer, activeZone, showMarkerZones]);
 
   useEffect(() => {
     if (layer !== 'grid' || !activeGridData) return;
@@ -631,6 +648,11 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, canManage = 
           <option value="">All statuses</option>
           {STATUSES.map(([value, label]) => <option value={value} key={value}>{label}</option>)}
         </select>
+        {layer === 'markers' && <button type="button"
+          className={'button subtle map-boundary-toggle' + (showMarkerZones ? ' is-active' : '')}
+          aria-pressed={showMarkerZones} onClick={() => setShowMarkerZones(value => !value)}>
+          <Shapes size={15} /> Zone boundaries: {showMarkerZones ? 'On' : 'Off'}
+        </button>}
         <button type="button" className="button subtle map-city-view" onClick={zoomToCity}><Crosshair size={15} /> Pondy city</button>
         <button type="button" className="button subtle map-extent-view" onClick={() => { onClearFocus?.(); setActiveZone(''); fitZones(); }}><MapPinned size={15} /> All demo areas</button>
         <button type="button" className="button subtle" onClick={resetMap}><RotateCcw size={15} /> Reset map</button>
@@ -674,6 +696,31 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, canManage = 
         retry={() => setOpsRetry(value => value + 1)}
         layers={opsLayers} onLayers={setOpsLayers} step={opsStep} onStep={setOpsStep}
       />}
+      {layer === 'zones' && <section className="zone-coverage-board" aria-label="Zone A through Zone D from and to boundaries">
+        <div className="zone-coverage-heading">
+          <div>
+            <h2>Where each zone starts and ends</h2>
+            <p>Choose a zone to zoom to its shaded boundary. “From” and “to” are neighborhood landmarks, while the outlined polygon shows the actual illustrative map extent.</p>
+          </div>
+          <span className="zone-coverage-disclaimer">DEMO BOUNDARIES · NOT OFFICIAL</span>
+        </div>
+        <div className="zone-coverage-grid">
+          {DEMO_ZONES.map(zone => <button type="button" key={zone.id}
+            className={'zone-coverage-card' + (activeZone === zone.id ? ' selected' : '')}
+            aria-pressed={activeZone === zone.id} onClick={() => selectDemoZone(zone)}
+            style={{ '--zone-accent': zone.color }}>
+            <span className="zone-coverage-name"><span className="zone-coverage-swatch" /> <strong>{zone.short}</strong> <small>{zone.area}</small></span>
+            <span className="zone-coverage-route">
+              <span><small>FROM</small><b>{zone.from}</b></span>
+              <span aria-hidden="true" className="zone-route-arrow">→</span>
+              <span><small>TO</small><b>{zone.to}</b></span>
+            </span>
+            <span className="zone-coverage-direction">{zone.direction}</span>
+            <span className="zone-coverage-limit">Approximate coordinate extent: {zone.extent}</span>
+            <span className="zone-coverage-action">View outlined area <Crosshair size={15} /></span>
+          </button>)}
+        </div>
+      </section>}
       <section className="map-layout" aria-label="Geospatial incident display">
         <div className="map-frame">
           <div className="map-canvas" ref={mapContainer} aria-label="Interactive map centered on Puducherry" />
@@ -703,22 +750,30 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, canManage = 
         </div>
         <aside className="map-results" aria-label={layer === 'grid' ? 'Ranked grid cells' : layer === 'operations' ? 'Simulated operational assets' : 'Incidents in current map view'}>
           {layer === 'zones' ? <>
-            <div className="map-results-heading"><h2>Explore zones</h2><span>4 sectors</span></div>
-            <p>Illustrative geographic sectors only, not official police station jurisdictions. Boundaries use coordinates, not incident labels.</p>
+            <div className="map-results-heading"><h2>Boundary details</h2><span>{selectedZone ? selectedZone.short : 'A–D'}</span></div>
+            <p>These colored polygons are illustrative map sectors, not verified police or administrative jurisdictions.</p>
             <div className="grid-side-actions">
-              <button type="button" className="button subtle" onClick={() => { setActiveZone(''); fitZones(); }}><Crosshair size={16} /> Show all zones</button>
+              <button type="button" className="button subtle" onClick={() => { setActiveZone(''); fitZones(); }}><Crosshair size={16} /> Show all four zones</button>
             </div>
-            <div className="map-results-list zone-list">
-              {DEMO_ZONES.map(zone => <button type="button" key={zone.id}
-                className={'demo-zone-item' + (activeZone === zone.id ? ' selected' : '')}
-                aria-pressed={activeZone === zone.id} onClick={() => selectDemoZone(zone)}>
-                <span className="zone-item-title"><i style={{ background: zone.color }} /><strong>{zone.short} · {zone.area}</strong></span>
-                <span>{zone.coverage}</span>
-                <small>Approx. extent: {zone.extent}</small>
-                <span className="zone-zoom-link">View this zone →</span>
-              </button>)}
+            <div className="zone-quick-select" role="group" aria-label="Select a demonstration zone">
+              {DEMO_ZONES.map(zone => <button key={zone.id} type="button"
+                onClick={() => selectDemoZone(zone)} aria-pressed={activeZone === zone.id}
+                className={activeZone === zone.id ? 'selected' : ''}
+                style={{ '--zone-accent': zone.color }}>{zone.short}</button>)}
             </div>
-            <div className="map-more">{activeZone ? zoneFeatures.length + ' coordinate-matched incidents currently loaded for this zone. Pan or zoom to update.' : 'Choose a zone to zoom in and display only its coordinate-matched incidents.'}</div>
+            {selectedZone ? <div className="zone-selected-detail" aria-live="polite">
+              <h3>{selectedZone.short} · {selectedZone.area}</h3>
+              <span><small>STARTS NEAR</small><strong>{selectedZone.from}</strong></span>
+              <span><small>EXTENDS TOWARD</small><strong>{selectedZone.to}</strong></span>
+              <span><small>DIRECTION</small>{selectedZone.direction}</span>
+              <span><small>BOUNDING COORDINATES</small>{selectedZone.extent}</span>
+              <p>The highlighted polygon shows the complete approximate sector. Landmarks describe its general geographic span, not exact street-by-street legal boundaries.</p>
+              <button type="button" className="button subtle" onClick={() => selectDemoZone(selectedZone)}><Crosshair size={15} /> Fit selected boundary</button>
+            </div> : <div className="zone-selected-detail">
+              <h3>All demonstration sectors</h3>
+              <p>Zones A–D are shown as separate colored outlines. Choose a card above, a colored polygon, or a zone button to see its starting and ending neighborhoods and complete outline.</p>
+            </div>}
+            <div className="map-more">{activeZone ? zoneFeatures.length + ' matching fictional incidents currently loaded in the selected zone. Pan or zoom to refresh the visible data.' : 'Choose a zone to inspect its geographic limits.'}</div>
           </> : layer === 'grid' ? (gridView === 'compare' ? <CompareSidebar
             data={comparisonData} loading={comparisonLoading} error={comparisonError}
             selectedCell={selectedCell} onSelectCell={setSelectedCell}
