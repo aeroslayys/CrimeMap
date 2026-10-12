@@ -8,6 +8,8 @@ import argparse
 import csv
 from pathlib import Path
 
+from sqlalchemy import select
+
 from app.db import SessionLocal
 from app.models import Incident
 
@@ -125,46 +127,70 @@ def same_point(actual, expected):
     return all(abs(a - b) <= 0.0000005 for a, b in zip(actual, expected))
 
 
+
+def redistribution_plan(db, *, apply=False):
+    """Count or move ONLY unchanged canonical synthetic DEMO coordinates.
+
+    A server route may call this with its current session. No implicit commit
+    occurs, so the caller can add a single audit event in the same transaction.
+    User-created and imported UUID records are never candidates.
+    """
+    with PREVIOUS.open(encoding="utf-8", newline="") as source:
+        previous = {
+            row["id"]: (float(row["old_latitude"]), float(row["old_longitude"]))
+            for row in csv.DictReader(source)
+        }
+    with CSV.open(encoding="utf-8", newline="") as source:
+        targets = {
+            row["id"]: (float(row["latitude"]), float(row["longitude"]))
+            for row in csv.DictReader(source)
+        }
+    query = select(Incident).where(Incident.id.in_(list(targets)))
+    if apply:
+        query = query.with_for_update()
+    records = {record.id: record for record in db.scalars(query)}
+    result = {
+        "canonical_total": len(targets),
+        "ready_to_move": 0,
+        "already_current": 0,
+        "skipped_custom": 0,
+        "missing": 0,
+        "updated": 0,
+    }
+    for identifier, target in targets.items():
+        record = records.get(identifier)
+        if record is None:
+            result["missing"] += 1
+            continue
+        if record.source_type != "synthetic":
+            result["skipped_custom"] += 1
+            continue
+        current = (float(record.latitude), float(record.longitude))
+        if same_point(current, target):
+            result["already_current"] += 1
+        elif any(known is not None and same_point(current, known)
+                 for known in (previous.get(identifier), LEGACY_COORDINATES.get(identifier))):
+            result["ready_to_move"] += 1
+            if apply:
+                record.latitude, record.longitude = target
+                result["updated"] += 1
+        else:
+            result["skipped_custom"] += 1
+    return result
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--apply", action="store_true",
                         help="Commit moves of untouched canonical demo pins (default: preview)")
     args = parser.parse_args(argv)
-    # A historical snapshot is necessary: deploying CSV changes alone does not
-    # update rows already seeded in PostgreSQL or SQLite.
-    with PREVIOUS.open(encoding="utf-8", newline="") as source:
-        old_fixture = {
-            row["id"]: (float(row["old_latitude"]), float(row["old_longitude"]))
-            for row in csv.DictReader(source)
-        }
-    proposed = skipped = unchanged = 0
-    with SessionLocal() as db, CSV.open(encoding="utf-8", newline="") as source:
-        for row in csv.DictReader(source):
-            identifier = row["id"]
-            target = (float(row["latitude"]), float(row["longitude"]))
-            record = db.get(Incident, identifier)
-            if record is None or record.source_type != "synthetic":
-                skipped += 1
-                continue
-            current = (float(record.latitude), float(record.longitude))
-            if same_point(current, target):
-                unchanged += 1
-                continue
-            recognized_positions = [old_fixture.get(identifier), LEGACY_COORDINATES.get(identifier)]
-            if not any(pos is not None and same_point(current, pos) for pos in recognized_positions):
-                print(f"SKIP {identifier}: coordinates were manually changed ({current})")
-                skipped += 1
-                continue
-            proposed += 1
-            print(f"{'APPLY' if args.apply else 'PREVIEW'} {identifier}: {current} -> {target}")
-            if args.apply:
-                record.latitude, record.longitude = target
+    with SessionLocal() as db:
+        result = redistribution_plan(db, apply=args.apply)
         if args.apply:
             db.commit()
         else:
             db.rollback()
-    print(f"{'Updated' if args.apply else 'Would update'} {proposed} untouched canonical fixtures; "
-          f"{unchanged} already redistributed; {skipped} missing, non-demo, or custom positioned.")
+    print(f"{'Applied' if args.apply else 'Preview'} canonical demo redistribution: {result}")
     if not args.apply:
         print("Dry run only. No database rows changed. Use --apply after reviewing the preview.")
 
