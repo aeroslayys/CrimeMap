@@ -25,7 +25,7 @@ export default function Welcome({ onSignIn, onOpenWorkspace, embedded = false })
           <button type="button" className="welcome-signin" onClick={enter}><LockKeyhole size={16}/> Sign in</button>
         </nav>
       </header>}
-      <main id="welcome-top" className="welcome-body">
+      <div id="welcome-top" className="welcome-body">
         <section className="welcome-hero" aria-labelledby="welcome-title">
           <div className="welcome-hero-copy">
             <div className="welcome-eyebrow"><span className="welcome-live-dot" /> PUDUCHERRY · GEOSPATIAL DECISION-SUPPORT DEMO</div>
@@ -90,7 +90,7 @@ export default function Welcome({ onSignIn, onOpenWorkspace, embedded = false })
           <span>CrimeMap · Hackathon demonstration · All incidents and locations are fictional.</span>
           {!embedded && <button type="button" onClick={enter}>Continue to sign in <ArrowRight size={15}/></button>}
         </footer>
-      </main>
+      </div>
     </div>
   );
 }
