@@ -5,7 +5,7 @@ import 'leaflet.heat';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
-import { Crosshair, Download, Grid2X2, Layers, MapPinned, RotateCcw, ShieldAlert, SlidersHorizontal, RadioTower } from 'lucide-react';
+import { Crosshair, Download, Grid2X2, Layers, MapPinned, RotateCcw, ShieldAlert, SlidersHorizontal, RadioTower, Shapes } from 'lucide-react';
 import { CATEGORIES, STATUSES, fetchAnalyticsFilters, fetchHotspots, fetchGridComparison, fetchMapIncidents, fetchOperations } from '../../api';
 import { DEFAULT_OPERATION_LAYERS, drawOperationalLayers, OperationsControls, OperationsResults } from './OperationalMode.jsx';
 import {
@@ -13,6 +13,7 @@ import {
   DEFAULT_COMPARISON, GridCompareForm,
 } from './GridComparison.jsx';
 import { focusedIncidentFeature } from './incident-focus.js';
+import { DEMO_ZONES, isWithinZone, zoneBounds } from './demo-zones.js';
 import './map.css';
 
 const DEFAULT_GRID = { start_date: '', end_date: '', zone: '', cell_size_m: '1000', min_count: '3' };
@@ -59,7 +60,7 @@ function comparisonPopup(properties) {
   return root;
 }
 
-const CENTER = [11.935, 79.83];
+const CENTER = [11.94, 79.81];
 const CATEGORY_KEYS = {
   Theft: 'theft', 'Vehicle Theft': 'vehicle', Burglary: 'burglary', Robbery: 'robbery',
   Assault: 'assault', Cybercrime: 'cybercrime', Vandalism: 'vandalism', Other: 'other',
@@ -120,6 +121,7 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, focusInciden
   const [category, setCategory] = useState('');
   const [status, setStatus] = useState('');
   const [layer, setLayer] = useState('markers');
+  const [activeZone, setActiveZone] = useState('');
   const [collection, setCollection] = useState(EMPTY);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -150,11 +152,18 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, focusInciden
   const [opsLayers, setOpsLayers] = useState(DEFAULT_OPERATION_LAYERS);
   const [opsStep, setOpsStep] = useState(0);
   const [selectedOperationIncident, setSelectedOperationIncident] = useState(null);
+  const zoneFeatures = useMemo(() => {
+    const selected = DEMO_ZONES.find(zone => zone.id === activeZone);
+    return selected ? collection.features.filter(feature => {
+      const [longitude, latitude] = feature.geometry.coordinates;
+      return isWithinZone(latitude, longitude, selected);
+    }) : collection.features;
+  }, [collection, activeZone]);
 
   useEffect(() => {
     if (!mapContainer.current) return;
     const map = L.map(mapContainer.current, {
-      center: CENTER, zoom: 13, zoomControl: false, preferCanvas: true,
+      center: CENTER, zoom: 11, zoomControl: false, preferCanvas: true,
     });
     mapRef.current = map;
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -376,7 +385,7 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, focusInciden
         },
       });
       clusterRef.current = overlay;
-      for (const feature of collection.features) {
+      for (const feature of layer === 'zones' ? zoneFeatures : collection.features) {
         const { coordinates } = feature.geometry;
         const categoryKey = CATEGORY_KEYS[feature.properties.category] || 'other';
         const icon = L.divIcon({
@@ -396,7 +405,39 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, focusInciden
       markerRefs.current.clear();
       clusterRef.current = null;
     };
-  }, [collection, layer, activeGridData, gridView, operations, opsLayers, opsStep]);
+  }, [collection, layer, activeGridData, gridView, operations, opsLayers, opsStep, zoneFeatures]);
+
+  // Separate, clickable demonstration sector outlines on the SAME Leaflet map.
+  useEffect(() => {
+    if (layer !== 'zones' || !mapRef.current) return;
+    const map = mapRef.current;
+    const group = L.layerGroup();
+    for (const zone of DEMO_ZONES) {
+      const selected = activeZone === zone.id;
+      const polygon = L.polygon(zoneBounds(zone), {
+        color: zone.color, weight: selected ? 4 : 2.5,
+        dashArray: selected ? undefined : '7 5',
+        fillColor: zone.color, fillOpacity: selected ? 0.16 : 0.06,
+      });
+      polygon.bindTooltip(zone.short, {
+        permanent: true, direction: 'center', className: 'demo-zone-map-label',
+      });
+      const popup = document.createElement('div');
+      popup.className = 'crime-popup';
+      const heading = document.createElement('strong');
+      heading.textContent = zone.short + ' · ' + zone.area;
+      const fromTo = document.createElement('p');
+      fromTo.textContent = zone.coverage;
+      const notice = document.createElement('small');
+      notice.textContent = 'Illustrative boundary · Not a police jurisdiction';
+      popup.append(heading, fromTo, notice);
+      polygon.bindPopup(popup);
+      polygon.on('click', () => setActiveZone(zone.id));
+      polygon.addTo(group);
+    }
+    group.addTo(map);
+    return () => map.removeLayer(group);
+  }, [layer, activeZone]);
 
   useEffect(() => {
     if (layer !== 'grid' || !activeGridData) return;
@@ -450,9 +491,24 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, focusInciden
     else requestAnimationFrame(() => requestAnimationFrame(tryOpen));
   }
 
+  function fitZones() {
+    const map = mapRef.current;
+    if (!map) return;
+    const all = DEMO_ZONES.flatMap(zone => zoneBounds(zone));
+    map.fitBounds(L.latLngBounds(all), { padding: [35, 35], maxZoom: 12, animate: false });
+  }
+
+  function selectDemoZone(zone) {
+    setActiveZone(zone.id);
+    mapRef.current?.fitBounds(L.latLngBounds(zoneBounds(zone)), {
+      padding: [35, 35], maxZoom: 14, animate: false,
+    });
+  }
+
   function resetMap() {
     setCategory('');
     setStatus('');
+    setActiveZone('');
     setGridView('single');
     setComparisonDraft({ ...DEFAULT_COMPARISON });
     setComparisonApplied({ ...DEFAULT_COMPARISON });
@@ -465,7 +521,7 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, focusInciden
     if (operations) setOpsStep(Math.max(0, operations.timeline.steps - 1));
     setSelectedOperationIncident(null);
     onClearFocus?.();
-    mapRef.current?.setView(CENTER, 13);
+    mapRef.current?.setView(CENTER, 11);
   }
 
   function applyGrid(event) {
@@ -540,6 +596,7 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, focusInciden
         </div>
         <div className="map-layer-switch" role="group" aria-label="Map display mode">
           <button type="button" className={layer === 'markers' ? 'active' : ''} aria-pressed={layer === 'markers'} onClick={() => setLayer('markers')}><MapPinned size={16} /> Markers</button>
+          <button type="button" className={layer === 'zones' ? 'active' : ''} aria-pressed={layer === 'zones'} onClick={() => { onClearFocus?.(); setLayer('zones'); setActiveZone(''); fitZones(); }}><Shapes size={17} /> Zones</button>
           <button type="button" className={layer === 'heatmap' ? 'active' : ''} aria-pressed={layer === 'heatmap'} onClick={() => { onClearFocus?.(); setLayer('heatmap'); }}><Layers size={17} /> Heatmap</button>
           {canAnalyze && <button type="button" className={layer === 'grid' ? 'active' : ''} aria-pressed={layer === 'grid'} onClick={() => { onClearFocus?.(); setLayer('grid'); }}><Grid2X2 size={17} /> Grid analysis</button>}
           <button type="button" className={layer === 'operations' ? 'active' : ''} aria-pressed={layer === 'operations'} onClick={() => { onClearFocus?.(); setLayer('operations'); }}><RadioTower size={17} /> Operations</button>
@@ -608,7 +665,8 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, focusInciden
         <div className="map-frame">
           <div className="map-canvas" ref={mapContainer} aria-label="Interactive map centered on Puducherry" />
           <div className="map-overlay-count" role="status">
-            {layer === 'grid'
+            {layer === 'zones' ? activeZone ? `${zoneFeatures.length} synthetic points shown · ${activeZone}` : '4 demonstration zones · select one'
+              : layer === 'grid'
               ? gridView === 'compare'
                   ? comparisonLoading ? 'Comparing synthetic periods…' : comparisonError ? 'Comparison unavailable' : comparisonData ? count(comparisonData.meta.displayed_cells) + ' cells changed classification' : 'Choose comparison periods'
                   : gridLoading ? 'Computing grid counts…' : gridError ? 'Grid analysis unavailable' : gridData ? count(gridData.meta.qualifying_cells) + ' cells meet the threshold' : 'Choose grid filters'
@@ -616,8 +674,11 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, focusInciden
               : loading ? 'Loading visible reports…' : error ? 'Map data unavailable' : `${collection.meta.returned} of ${collection.meta.total} incidents in view`}
           </div>
           <div className="map-legend" aria-label="Map legend">
-            <strong>{layer === 'grid' ? gridView === 'compare' ? 'Fixed-grid period comparison' : 'Synthetic incidents per cell' : layer === 'operations' ? 'Fictional operational layers' : layer === 'heatmap' ? 'Synthetic point density' : 'Incident categories'}</strong>
-            {layer === 'operations' ? <div className="ops-map-legend">
+            <strong>{layer === 'zones' ? 'Demonstration zones (not police limits)' : layer === 'grid' ? gridView === 'compare' ? 'Fixed-grid period comparison' : 'Synthetic incidents per cell' : layer === 'operations' ? 'Fictional operational layers' : layer === 'heatmap' ? 'Synthetic point density' : 'Incident categories'}</strong>
+            {layer === 'zones' ? <div className="zone-legend">
+              {DEMO_ZONES.map(zone => <span key={zone.id}><i style={{ background: zone.color }} /> {zone.short}</span>)}
+              <small>Tap a boundary or choose a zone to inspect it separately.</small>
+            </div> : layer === 'operations' ? <div className="ops-map-legend">
               <span><i style={{ background: '#e39b80' }} /> Crime incidents</span>
               <span><i style={{ background: '#5bc7ce' }} /> CCTV assets</span>
               <span><i style={{ background: '#edb760' }} /> Road accidents</span>
@@ -628,7 +689,24 @@ export default function CrimeMap({ refresh = 0, canAnalyze = false, focusInciden
           </div>
         </div>
         <aside className="map-results" aria-label={layer === 'grid' ? 'Ranked grid cells' : layer === 'operations' ? 'Simulated operational assets' : 'Incidents in current map view'}>
-          {layer === 'grid' ? (gridView === 'compare' ? <CompareSidebar
+          {layer === 'zones' ? <>
+            <div className="map-results-heading"><h2>Explore zones</h2><span>4 sectors</span></div>
+            <p>Illustrative geographic sectors only, not official police station jurisdictions. Boundaries use coordinates, not incident labels.</p>
+            <div className="grid-side-actions">
+              <button type="button" className="button subtle" onClick={() => { setActiveZone(''); fitZones(); }}><Crosshair size={16} /> Show all zones</button>
+            </div>
+            <div className="map-results-list zone-list">
+              {DEMO_ZONES.map(zone => <button type="button" key={zone.id}
+                className={'demo-zone-item' + (activeZone === zone.id ? ' selected' : '')}
+                aria-pressed={activeZone === zone.id} onClick={() => selectDemoZone(zone)}>
+                <span className="zone-item-title"><i style={{ background: zone.color }} /><strong>{zone.short} · {zone.area}</strong></span>
+                <span>{zone.coverage}</span>
+                <small>Approx. extent: {zone.extent}</small>
+                <span className="zone-zoom-link">View this zone →</span>
+              </button>)}
+            </div>
+            <div className="map-more">{activeZone ? zoneFeatures.length + ' coordinate-matched incidents currently loaded for this zone. Pan or zoom to update.' : 'Choose a zone to zoom in and display only its coordinate-matched incidents.'}</div>
+          </> : layer === 'grid' ? (gridView === 'compare' ? <CompareSidebar
             data={comparisonData} loading={comparisonLoading} error={comparisonError}
             selectedCell={selectedCell} onSelectCell={setSelectedCell}
             onFit={fitGrid} onDownload={downloadGrid}
