@@ -5,6 +5,7 @@ from pathlib import Path
 from app.db import Base, SessionLocal, engine
 from app.models import Incident
 from app.schemas import IncidentCreate
+from app.demo_land import in_demo_land
 
 CSV = Path(__file__).resolve().parents[2] / "data" / "synthetic_incidents.csv"
 
@@ -18,6 +19,8 @@ def main() -> None:
             if db.get(Incident, identifier):
                 continue
             item = IncidentCreate.model_validate({k: v for k, v in row.items() if v != ""})
+            if not in_demo_land(item.latitude, item.longitude):
+                raise ValueError(f"Seed {identifier} is outside inland demo areas")
             db.add(Incident(
                 id=identifier,
                 category=item.category.value,

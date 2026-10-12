@@ -31,7 +31,7 @@ test('pin placement suggests the nearest of four fictional demonstration zones',
     assert.equal(suggestDemoZone(ref.latitude, ref.longitude), ref.name);
   }
   assert.equal(suggestDemoZone(11.935, 79.83), 'Demo Zone A');
-  assert.equal(suggestDemoZone(11.9442, 79.8231), 'Demo Zone D');
+  assert.equal(suggestDemoZone(11.9308, 79.8062), 'Demo Zone D');
 });
 
 test('no zone is guessed for missing, invalid, or distant coordinates', () => {
@@ -48,10 +48,10 @@ test('every new pin position replaces the previous demo zone and preserves other
     category: 'Theft', status: 'reported', description: 'Synthetic example',
     latitude: null, longitude: null, police_station: '',
   };
-  const zoneA = locationFieldsForPin(previous, 11.9332, 79.8294);
+  const zoneA = locationFieldsForPin(previous, 11.9327, 79.8110);
   assert.equal(zoneA.police_station, 'Demo Zone A');
   const edited = { ...zoneA, police_station: 'My manual demonstration zone' };
-  const zoneB = locationFieldsForPin(edited, 11.9509, 79.8196);
+  const zoneB = locationFieldsForPin(edited, 11.9573, 79.8227);
   assert.equal(zoneB.police_station, 'Demo Zone B');
   assert.equal(zoneB.category, 'Theft');
   assert.equal(zoneB.description, previous.description);
@@ -62,7 +62,7 @@ test('every new pin position replaces the previous demo zone and preserves other
 });
 
 test('moving outside demo coverage clears the zone; clearing pin removes stale values', () => {
-  const selected = locationFieldsForPin({ category: 'Other', police_station: 'old' }, 11.9195, 79.8039);
+  const selected = locationFieldsForPin({ category: 'Other', police_station: 'old' }, 11.9221, 79.8160);
   assert.equal(selected.police_station, 'Demo Zone C');
   const distant = locationFieldsForPin(selected, 12.15, 79.83);
   assert.equal(distant.police_station, '');

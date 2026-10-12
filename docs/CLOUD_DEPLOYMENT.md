@@ -252,6 +252,12 @@ SELECT COUNT(*) AS synthetic_incident_count FROM incidents;
 
 This does not expose password hashes or personal credentials. The app remains a **synthetic-only demo**.
 
+### Correct all existing synthetic locations
+
+For the complete current procedure, including edited/imported synthetic rows, use
+[LAND_ONLY_UPDATE.md](LAND_ONLY_UPDATE.md). The older canonical-only utilities
+below intentionally skip those rows and cannot guarantee all demo rows move.
+
 ### Correct older fictional offshore pins safely (optional, manual)
 
 The bundled `data/synthetic_incidents.csv` and downloadable sample CSV now use **tighter, intentionally inland fictional locations** for the 100 canonical `DEMO-0001`…`DEMO-0100` incidents. They cluster around inland portions of the city and are not claims about actual crime or verified police jurisdictions. Coordinate envelopes are conservative **approximations**, not an authoritative coastline/land-cover polygon: visually validate the map before presenting.

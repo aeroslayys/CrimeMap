@@ -11,10 +11,10 @@ export function validIncidentPosition(latitude, longitude) {
 // These are NOT administrative boundaries, station limits or verified jurisdictions.
 // Approximate nearest-reference labeling exists only for creating demo records.
 export const DEMO_ZONE_REFERENCES = Object.freeze([
-  Object.freeze({ name: 'Demo Zone A', latitude: 11.9332, longitude: 79.8294 }),
-  Object.freeze({ name: 'Demo Zone B', latitude: 11.9509, longitude: 79.8196 }),
-  Object.freeze({ name: 'Demo Zone C', latitude: 11.9195, longitude: 79.8039 }),
-  Object.freeze({ name: 'Demo Zone D', latitude: 11.9442, longitude: 79.8231 }),
+  Object.freeze({ name: 'Demo Zone A', latitude: 11.9327, longitude: 79.8110 }),
+  Object.freeze({ name: 'Demo Zone B', latitude: 11.9573, longitude: 79.8227 }),
+  Object.freeze({ name: 'Demo Zone C', latitude: 11.9221, longitude: 79.8160 }),
+  Object.freeze({ name: 'Demo Zone D', latitude: 11.9308, longitude: 79.8062 }),
 ]);
 export const DEMO_ZONE_MAX_DISTANCE_METERS = 3500;
 const EARTH_RADIUS_METERS = 6371008.8;
